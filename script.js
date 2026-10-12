@@ -250,3 +250,67 @@
     });
   }
 })();
+
+// LinkedIn Timelapse Player
+(() => {
+  const slides = [...document.querySelectorAll('[data-timelapse-slide]')];
+  const pills = [...document.querySelectorAll('[data-timelapse-pill]')];
+  const playBtn = document.querySelector('[data-timelapse-play]');
+  const prevBtn = document.querySelector('[data-timelapse-prev]');
+  const nextBtn = document.querySelector('[data-timelapse-next]');
+  if (!slides.length) return;
+
+  let currentIndex = 0;
+  let isPlaying = false;
+  let timer = null;
+
+  const showSlide = (index) => {
+    currentIndex = (index + slides.length) % slides.length;
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === currentIndex);
+    });
+    pills.forEach((pill, i) => {
+      pill.classList.toggle('active', i === currentIndex);
+    });
+  };
+
+  const play = () => {
+    isPlaying = true;
+    if (playBtn) playBtn.textContent = '⏸ Pause';
+    timer = setInterval(() => {
+      showSlide(currentIndex + 1);
+    }, 3800);
+  };
+
+  const pause = () => {
+    isPlaying = false;
+    if (playBtn) playBtn.textContent = '▶ Play Timelapse';
+    if (timer) clearInterval(timer);
+    timer = null;
+  };
+
+  playBtn?.addEventListener('click', () => {
+    if (isPlaying) pause();
+    else play();
+  });
+
+  prevBtn?.addEventListener('click', () => {
+    pause();
+    showSlide(currentIndex - 1);
+  });
+
+  nextBtn?.addEventListener('click', () => {
+    pause();
+    showSlide(currentIndex + 1);
+  });
+
+  pills.forEach((pill, i) => {
+    pill.addEventListener('click', () => {
+      pause();
+      showSlide(i);
+    });
+  });
+
+  showSlide(0);
+})();
+
