@@ -456,3 +456,42 @@
     matchStart.hidden = false;
   });
 })();
+
+
+// ============================================================
+// JOURNEY & PLANS INTERACTION
+// ============================================================
+(() => {
+  // Year tab switcher
+  const jTabs = document.querySelectorAll('[data-year-tab]');
+  const jPanels = document.querySelectorAll('[data-year-panel]');
+  jTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const year = tab.dataset.yearTab;
+      jTabs.forEach((t) => {
+        const active = t.dataset.yearTab === year;
+        t.classList.toggle('is-active', active);
+        t.setAttribute('aria-selected', String(active));
+      });
+      jPanels.forEach((p) => {
+        const show = p.dataset.yearPanel === year;
+        p.classList.toggle('is-active', show);
+        p.hidden = !show;
+      });
+    });
+  });
+
+  // Plan button prefill message in contact form
+  document.querySelectorAll('[data-plan]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const planName = btn.dataset.plan;
+      const planInput = document.getElementById('plan-input');
+      const msg = document.getElementById('message-input');
+      if (planInput) planInput.value = planName;
+      if (msg) {
+        msg.value = "Hi! I would love to explore the " + planName + " plan. Here are details about our project: ";
+        msg.focus();
+      }
+    });
+  });
+})();
