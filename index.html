@@ -37,6 +37,7 @@
       <nav class="desktop-nav" aria-label="Primary navigation">
         <a href="#work">Selected work</a>
         <a href="#live-lab">Live lab</a>
+        <a href="#play">Play games</a>
         <a href="#services">What I build</a>
         <a href="#proof">Proof</a>
         <a href="#faq">FAQ</a>
@@ -50,6 +51,7 @@
       <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation">
         <a href="#work">Selected work</a>
         <a href="#live-lab">Live lab</a>
+        <a href="#play">Play games</a>
         <a href="#services">What I build</a>
         <a href="#proof">Credentials & GitHub</a>
         <a href="#faq">FAQ</a>
@@ -261,59 +263,152 @@
         </div>
       </section>
 
-      <section class="models-hero">
-        <div class="models-orbit orbit-x" aria-hidden="true"></div><div class="models-orbit orbit-y" aria-hidden="true"></div>
-        <div class="container models-hero-copy" data-model-reveal>
-          <p class="eyebrow"><span class="models-live-dot"></span> INTERACTION PLAYGROUND / 04 MODES</p>
-          <h1>GIVE THE<br /><span>ideas</span> SOME MOTION.</h1>
-          <p>Four responsive treatments for the Live Lab: dimensional, spiral, swipeable, and cursor-lit. Take them for a spin on desktop or touch through them on mobile.</p>
-          <div class="models-badges"><span>3D TILT</span><span>SPIRAL REVEAL</span><span>TOUCH SWIPE</span><span>CURSOR LIGHT</span></div>
+      <!-- ===================== INTERACTIVE GAME ZONE ===================== -->
+      <section class="game-zone" id="play" aria-labelledby="game-zone-title">
+        <div class="game-zone-blob gz-blob-a" aria-hidden="true"></div>
+        <div class="game-zone-blob gz-blob-b" aria-hidden="true"></div>
+        <div class="game-zone-blob gz-blob-c" aria-hidden="true"></div>
+        <div class="gz-cloud gz-cloud-a" aria-hidden="true"></div>
+        <div class="gz-cloud gz-cloud-b" aria-hidden="true"></div>
+
+        <div class="container">
+          <div class="gz-header" data-reveal>
+            <p class="gz-eyebrow"><span class="gz-live-pip"></span> LIVE PLAY ZONE</p>
+            <h2 id="game-zone-title">THINK YOU<br><em>know</em> THIS STUFF?</h2>
+            <p class="gz-sub">Three mini-games to test your AI &amp; tech instincts. No login, no signup — just play.</p>
+            <div class="gz-badges">
+              <span>⚡ INSTANT</span>
+              <span>🧠 AI QUIZ</span>
+              <span>⌨️ SPEED TYPE</span>
+              <span>🎴 SKILL MATCH</span>
+            </div>
+          </div>
+
+          <!-- Tab switcher (Tamada-style folder tabs) -->
+          <div class="gz-tabs" role="tablist" aria-label="Game selection">
+            <button class="gz-tab gz-tab-blue is-active" id="tab-quiz" role="tab" aria-selected="true" aria-controls="panel-quiz" data-gz-tab="quiz">
+              🧠 AI Quiz
+            </button>
+            <button class="gz-tab gz-tab-green" id="tab-speed" role="tab" aria-selected="false" aria-controls="panel-speed" data-gz-tab="speed">
+              ⌨️ Speed Type
+            </button>
+            <button class="gz-tab gz-tab-orange" id="tab-match" role="tab" aria-selected="false" aria-controls="panel-match" data-gz-tab="match">
+              🎴 Skill Match
+            </button>
+          </div>
+
+          <!-- =========== GAME 1: AI Quiz =========== -->
+          <div class="gz-panel gz-panel-blue is-active" id="panel-quiz" role="tabpanel" aria-labelledby="tab-quiz" data-gz-panel="quiz">
+            <div class="gz-panel-inner">
+              <div class="gz-game-copy">
+                <span class="gz-game-number">01</span>
+                <h3>THE AI<br><em>CHALLENGE.</em></h3>
+                <p>Five rapid-fire questions about AI, agents, and modern dev. Get 4+ right to pass. Each question is timed — think fast.</p>
+                <div class="gz-score-row" id="quiz-scoreboard" aria-live="polite">
+                  <span class="gz-score-chip" id="quiz-score-display">0 / 5</span>
+                  <span class="gz-pass-chip" id="quiz-result" hidden></span>
+                </div>
+                <div class="gz-progress-bar-wrap" aria-label="Quiz progress">
+                  <div class="gz-progress-bar" id="quiz-progress" style="width:0%"></div>
+                </div>
+              </div>
+              <div class="gz-game-stage">
+                <div class="gz-quiz-start" id="quiz-start-screen">
+                  <div class="gz-big-emoji">🧠</div>
+                  <h4>Ready to be tested?</h4>
+                  <p>5 questions &middot; 15 seconds each &middot; AI &amp; Tech focused</p>
+                  <button class="gz-play-btn gz-btn-blue" id="quiz-start-btn" type="button">START QUIZ <span>→</span></button>
+                </div>
+                <div class="gz-quiz-question" id="quiz-question-screen" hidden>
+                  <div class="gz-timer-ring" aria-hidden="true">
+                    <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="5"/><circle class="gz-timer-arc" cx="30" cy="30" r="26" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-dasharray="163" stroke-dashoffset="0"/></svg>
+                    <span id="quiz-timer-display">15</span>
+                  </div>
+                  <p class="gz-q-number" id="quiz-q-number">Q1 / 5</p>
+                  <h4 id="quiz-q-text">Question text loads here</h4>
+                  <div class="gz-options" id="quiz-options"></div>
+                </div>
+                <div class="gz-quiz-end" id="quiz-end-screen" hidden>
+                  <div class="gz-result-emoji" id="quiz-end-emoji">🏆</div>
+                  <h4 id="quiz-end-title">Nice work!</h4>
+                  <p>You scored <strong id="quiz-final-score"></strong> out of 5.</p>
+                  <button class="gz-play-btn gz-btn-blue" id="quiz-retry-btn" type="button">PLAY AGAIN <span>↺</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- =========== GAME 2: Speed Type =========== -->
+          <div class="gz-panel gz-panel-green" id="panel-speed" role="tabpanel" aria-labelledby="tab-speed" data-gz-panel="speed" hidden>
+            <div class="gz-panel-inner">
+              <div class="gz-game-copy">
+                <span class="gz-game-number">02</span>
+                <h3>SPEED<br><em>TYPE.</em></h3>
+                <p>Type tech keywords before time runs out. Each correct word = points. How fast can your fingers move?</p>
+                <div class="gz-score-row" aria-live="polite">
+                  <span class="gz-score-chip gz-chip-green" id="speed-score-display">0 pts</span>
+                  <span class="gz-time-chip" id="speed-time-display">30s</span>
+                </div>
+                <div class="gz-progress-bar-wrap" aria-label="Speed type time remaining">
+                  <div class="gz-progress-bar gz-progress-green" id="speed-progress" style="width:100%"></div>
+                </div>
+              </div>
+              <div class="gz-game-stage">
+                <div class="gz-quiz-start" id="speed-start-screen">
+                  <div class="gz-big-emoji">⌨️</div>
+                  <h4>How fast can you type?</h4>
+                  <p>30 seconds &middot; Tech keywords &middot; No backspace penalty</p>
+                  <button class="gz-play-btn gz-btn-green" id="speed-start-btn" type="button">START TYPING <span>→</span></button>
+                </div>
+                <div class="gz-speed-play" id="speed-play-screen" hidden>
+                  <div class="gz-word-display" id="speed-word-display" aria-live="polite"></div>
+                  <input class="gz-type-input" id="speed-type-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="type the word above…" aria-label="Type the displayed word">
+                  <div class="gz-word-feedback" id="speed-feedback" aria-live="assertive"></div>
+                  <div class="gz-word-streak" id="speed-streak">Streak: <b id="speed-streak-val">0</b> 🔥</div>
+                </div>
+                <div class="gz-quiz-end" id="speed-end-screen" hidden>
+                  <div class="gz-result-emoji">⚡</div>
+                  <h4 id="speed-end-title">Time's up!</h4>
+                  <p>You scored <strong id="speed-final-score"></strong> points</p>
+                  <button class="gz-play-btn gz-btn-green" id="speed-retry-btn" type="button">PLAY AGAIN <span>↺</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- =========== GAME 3: Skill Match =========== -->
+          <div class="gz-panel gz-panel-orange" id="panel-match" role="tabpanel" aria-labelledby="tab-match" data-gz-panel="match" hidden>
+            <div class="gz-panel-inner">
+              <div class="gz-game-copy">
+                <span class="gz-game-number">03</span>
+                <h3>SKILL<br><em>MATCH.</em></h3>
+                <p>Flip cards to find matching tech skill pairs. All 8 pairs matched = you win. Fewer flips = better score.</p>
+                <div class="gz-score-row" aria-live="polite">
+                  <span class="gz-score-chip gz-chip-orange" id="match-flips-display">0 flips</span>
+                  <span class="gz-score-chip gz-chip-orange" id="match-pairs-display">0 / 8 pairs</span>
+                </div>
+              </div>
+              <div class="gz-game-stage">
+                <div class="gz-quiz-start" id="match-start-screen">
+                  <div class="gz-big-emoji">🎴</div>
+                  <h4>Memory + tech smarts.</h4>
+                  <p>Flip cards to find matching tech skill pairs. Fewer flips = better score.</p>
+                  <button class="gz-play-btn gz-btn-orange" id="match-start-btn" type="button">START MATCHING <span>→</span></button>
+                </div>
+                <div class="gz-match-board" id="match-board" hidden aria-label="Skill match game board" role="grid"></div>
+                <div class="gz-quiz-end" id="match-end-screen" hidden>
+                  <div class="gz-result-emoji">🏅</div>
+                  <h4 id="match-end-title">All matched!</h4>
+                  <p>You completed it in <strong id="match-final-flips"></strong> flips.</p>
+                  <button class="gz-play-btn gz-btn-orange" id="match-retry-btn" type="button">PLAY AGAIN <span>↺</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
-        <a class="down-cue" href="#models">SCROLL TO PLAY <b>↓</b></a>
       </section>
-
-      <section class="models-list container" id="models">
-        <article class="model-block model-one" data-model-reveal>
-          <div class="model-intro"><p class="eyebrow">MODEL 01 / FULL 3D DECK</p><h2>THE <span>tilt</span> STACK.</h2><p>Cards lean with the pointer. The active card floats above the deck and has its own soft cursor glow.</p><div class="model-controls"><button type="button" data-deck-prev aria-label="Previous stacked project">←</button><button type="button" data-deck-next aria-label="Next stacked project">→</button><span>CLICK ARROWS OR DRAG</span></div></div>
-          <div class="tilt-deck" data-tilt-deck aria-label="Interactive 3D project card deck">
-            <article class="deck-card deck-card-back deck-back-one" data-tilt-card><small>02 / CREATOR TECH</small><h3>CREATOR<br />FLOW</h3><span>MAKE A SCENE ✳</span><i class="deck-orb"></i></article>
-            <article class="deck-card deck-card-back deck-back-two" data-tilt-card><small>03 / VOICE AI</small><h3>ECHO<br />DESK</h3><span>ALWAYS A HUMAN ↗</span><i class="deck-wave"><b></b><b></b><b></b><b></b><b></b></i></article>
-            <article class="deck-card deck-card-main" data-tilt-card><small>01 / AGENTIC AI</small><h3>ORBIT<br /><em>AGENT OS</em></h3><p>Teams of agents. One clear thread.</p><div class="deck-node node-a">PLAN</div><div class="deck-node node-b">BUILD</div><div class="deck-node node-c">CHECK</div><i class="deck-orbit"></i><span class="deck-live">PLAY MODE</span></article>
-          </div>
-        </article>
-
-        <article class="model-block model-two" data-model-reveal>
-          <div class="model-intro"><p class="eyebrow">MODEL 02 / SPIRAL REEL</p><h2>THE <span>spiral</span> DROP.</h2><p>Each card lands with a corkscrew reveal. The stack gives the next project a little anticipation.</p><div class="model-note">SCROLL IT. THE SPIRAL IS THE ENTRANCE.</div></div>
-          <div class="spiral-stack" data-spiral-stack>
-            <article class="spiral-card spiral-card-a" data-model-reveal><span>01 / AI AGENTS</span><h3>LESS PROMPT.<br />MORE PROGRESS.</h3><b>↗</b><i></i></article>
-            <article class="spiral-card spiral-card-b" data-model-reveal><span>02 / ADAPTIVE SKILLS</span><h3>LEARN THE LOOP.<br />KEEP THE HUMAN.</h3><b>✳</b><i></i></article>
-            <article class="spiral-card spiral-card-c" data-model-reveal><span>03 / FAIR SHOPPING</span><h3>SHOW ME THE<br />RECEIPTS.</h3><b>◎</b><i></i></article>
-          </div>
-        </article>
-
-        <article class="model-block model-three" data-model-reveal>
-          <div class="model-intro"><p class="eyebrow">MODEL 03 / SIDE-SWIPE</p><h2>THE <span>swipe</span> RUN.</h2><p>A clean horizontal rail with strong visual variety. Thumb first on phones, trackpad or arrows on desktop.</p><div class="model-controls"><button type="button" data-swipe-prev aria-label="Previous swipe card">←</button><button type="button" data-swipe-next aria-label="Next swipe card">→</button><span>GRAB A CARD, KEEP GOING</span></div></div>
-          <div class="swipe-rail" data-swipe-rail>
-            <article class="swipe-card swipe-card-a"><small>AI SHOPPING</small><div class="swipe-graphic graphic-cart"><span>4.8 ★</span><b>FAIRCART</b><i>COMPARE THE PROOF</i></div><h3>Buy with<br />receipts.</h3><p>Ratings, reviews, photos, sources.</p><span class="swipe-index">01 / 04</span></article>
-            <article class="swipe-card swipe-card-b"><small>AI AVATAR</small><div class="swipe-graphic graphic-avatar"><span class="face-eyes">• &nbsp; •</span><b>HI, HUMAN.</b><i>CURIOUS? ASK.</i></div><h3>Listen. Learn.<br />Ask first.</h3><p>Real-time cues with consent.</p><span class="swipe-index">02 / 04</span></article>
-            <article class="swipe-card swipe-card-c"><small>CYBER DEFENCE</small><div class="swipe-graphic graphic-shield"><span>✓</span><b>SCOPED</b><i>HUMAN APPROVED</i></div><h3>Catch the signal.<br />Show the why.</h3><p>Defensive agents, scoped work.</p><span class="swipe-index">03 / 04</span></article>
-            <article class="swipe-card swipe-card-d"><small>VOICE + MOBILE</small><div class="swipe-graphic graphic-voice"><span>▂▅▇▅▃▆▂</span><b>HELLO!</b><i>VOICE · FLUTTER</i></div><h3>Support that<br />moves with you.</h3><p>Voice, chat, a clear handoff.</p><span class="swipe-index">04 / 04</span></article>
-          </div>
-        </article>
-
-        <article class="model-block model-four" data-model-reveal>
-          <div class="model-intro"><p class="eyebrow">MODEL 04 / 2D CURSOR GLOW</p><h2>THE <span>spotlight</span> BOARD.</h2><p>Flat, punchy panels with a cursor-following glow and pop details. Small movement, loud personality.</p><div class="model-note">MOVE YOUR CURSOR OVER THE PANELS</div></div>
-          <div class="spotlight-grid">
-            <article class="spot-card spot-lime" data-spotlight><span>THE PROBLEM</span><h3>TOO MANY<br />TABS.</h3><b>☹</b><i></i></article>
-            <article class="spot-card spot-pink" data-spotlight><span>THE MOVE</span><h3>ONE<br />AGENT CREW.</h3><b>✳</b><i></i></article>
-            <article class="spot-card spot-blue" data-spotlight><span>THE PROOF</span><h3>EVERY<br />STEP LOGGED.</h3><b>✓</b><i></i></article>
-            <article class="spot-card spot-coral" data-spotlight><span>THE FEEL</span><h3>MORE<br />SWAG.</h3><b>↗</b><i></i></article>
-          </div>
-        </article>
-      </section>
-
-      <section class="models-end"><div class="container"><p>WHICH ONE FEELS LIKE <span>your lab?</span></p></div></section>
-
+      <!-- ================ END GAME ZONE ================ -->
 
       <section class="approach panel panel-lime" aria-labelledby="approach-title">
         <div class="container approach-grid">
