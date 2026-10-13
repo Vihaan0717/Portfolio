@@ -421,6 +421,16 @@ window.SoundFX = (() => {
       placePreviewRandomly(index);
     };
 
+    const deactivateCapability = () => {
+      capabilityItems.forEach((candidate) => {
+        candidate.classList.remove('is-active');
+        candidate.setAttribute('aria-pressed', 'false');
+      });
+      if (capabilityPreview) {
+        capabilityPreview.classList.remove('is-visible', 'is-popping');
+      }
+    };
+
     // HOVER: instantly activate capability, change text font & pop polaroid WITHOUT needing to click!
     capabilityItems.forEach((item, index) => {
       item.addEventListener('mouseenter', () => {
@@ -433,6 +443,14 @@ window.SoundFX = (() => {
         activateCapability(item, index);
       });
 
+      item.addEventListener('mouseleave', () => {
+        deactivateCapability();
+      });
+
+      item.addEventListener('pointerleave', () => {
+        deactivateCapability();
+      });
+
       // CLICK: also activates (great for mobile/touch or keyboards)
       item.addEventListener('click', (e) => {
         e.preventDefault();
@@ -440,23 +458,29 @@ window.SoundFX = (() => {
       });
     });
 
-    // Hide preview after cursor leaves the entire stage area
+    // Hide preview and return all items to normal when cursor leaves the entire stage area or list
     if (capabilityStage) {
       capabilityStage.addEventListener('mouseleave', () => {
-        hideTimeout = setTimeout(() => {
-          if (capabilityPreview) {
-            capabilityPreview.classList.remove('is-visible', 'is-popping');
-          }
-        }, 400);
+        deactivateCapability();
+      });
+      capabilityStage.addEventListener('pointerleave', () => {
+        deactivateCapability();
       });
     }
 
-    // Show initial preview for the first active item
-    const firstActive = capabilityStage.querySelector('.choose-item.is-active') || capabilityItems[0];
+    if (chooseList) {
+      chooseList.addEventListener('mouseleave', () => {
+        deactivateCapability();
+      });
+      chooseList.addEventListener('pointerleave', () => {
+        deactivateCapability();
+      });
+    }
+
+    // Preload preview assets without forcing preview to show initially
+    const firstActive = capabilityItems[0];
     if (firstActive) {
-      const idx = capabilityItems.indexOf(firstActive);
       updatePreviewContent(firstActive);
-      placePreviewRandomly(idx >= 0 ? idx : 0);
     }
 
     // ============================================================

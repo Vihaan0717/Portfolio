@@ -1321,13 +1321,7 @@ h1, h2, h3, p { margin-top: 0; }
   transform: rotate(-1.5deg) scaleX(1);
 }
 
-/* Dim non-hovered siblings whenever cursor is over the list */
-.choose-list:hover .choose-item:not(:hover),
-.choose-list:has(.choose-item:hover) .choose-item:not(:hover) {
-  opacity: .42;
-  scale: .94;
-  filter: blur(0.5px);
-}
+/* Do not fade or dim other text items when one reacts */
 
 .choose-preview {
   position: absolute;
