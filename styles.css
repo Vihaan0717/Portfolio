@@ -127,9 +127,9 @@ h1, h2, h3, p { margin-top: 0; }
 
 .hero-stage {
   position: relative;
-  min-height: 520px;
+  min-height: 550px;
   width: 100%;
-  max-width: 580px;
+  max-width: 650px;
   margin: 0 auto;
   align-self: end;
   perspective: 1200px;
@@ -138,142 +138,159 @@ h1, h2, h3, p { margin-top: 0; }
   position: absolute;
   overflow: hidden;
   border: 7px solid white;
-  border-radius: 24px;
+  border-radius: 26px;
   box-shadow: 10px 14px 0 rgba(25,22,30,.18), 0 20px 48px -18px rgba(25,22,30,.4);
-  transition: transform .45s var(--ease-spring), box-shadow .35s ease, z-index .15s ease;
+  transition: transform .52s var(--ease-spring), box-shadow .38s ease, opacity .35s ease;
   will-change: transform;
   cursor: pointer;
 }
 
 /* While JS mouse lerp is tracking, disable CSS transform transition for silky 60fps response */
 .hero-stage.is-tracking .mini-product {
-  transition: box-shadow .35s ease, z-index .15s ease !important;
+  transition: box-shadow .38s ease, opacity .35s ease !important;
 }
 
-/* Default hover reactions if not actively tracked by JS */
+/* Default pure CSS open-up on hover (cards open up to both sides from under the middle one) */
 .hero-stage:not(.is-popping):hover .product-left {
-  transform: translateX(-16px) translateY(-14px) rotate(-10deg) scale(1.03);
-  box-shadow: 14px 20px 0 rgba(25,22,30,.22), 0 26px 52px -16px rgba(25,22,30,.45);
+  transform: translateX(-50%) translateX(-220px) translateY(24px) rotate(-10deg) scale(1);
+  box-shadow: 14px 20px 0 rgba(25,22,30,.22), 0 28px 56px -16px rgba(25,22,30,.45);
+  opacity: 1;
 }
 .hero-stage:not(.is-popping):hover .product-center {
-  transform: translateX(-50%) translateY(-18px) scale(1.04) rotate(0deg);
-  box-shadow: 14px 22px 0 rgba(25,22,30,.22), 0 30px 60px -16px rgba(25,22,30,.5);
+  transform: translateX(-50%) translateY(-14px) scale(1.02) rotate(0deg);
+  box-shadow: 14px 24px 0 rgba(25,22,30,.24), 0 32px 64px -16px rgba(25,22,30,.5);
 }
 .hero-stage:not(.is-popping):hover .product-right {
-  transform: translateX(16px) translateY(-14px) rotate(10deg) scale(1.03);
-  box-shadow: 14px 20px 0 rgba(25,22,30,.22), 0 26px 52px -16px rgba(25,22,30,.45);
+  transform: translateX(-50%) translateX(220px) translateY(34px) rotate(10deg) scale(1);
+  box-shadow: 14px 20px 0 rgba(25,22,30,.22), 0 28px 56px -16px rgba(25,22,30,.45);
+  opacity: 1;
 }
 
-/* Direct hover on individual cards brings card forward and lifts it up */
-.hero-stage .mini-product:hover {
-  z-index: 10 !important;
-  box-shadow: 16px 24px 0 rgba(25,22,30,.25), 0 34px 64px -14px rgba(25,22,30,.55) !important;
-}
+/* Individual direct card hover (enhanced tilt & elevation while STRICTLY staying under middle phone) */
 .hero-stage .product-center:hover {
-  transform: translateX(-50%) translateY(-22px) scale(1.06) rotate(0deg) !important;
+  transform: translateX(-50%) translateY(-22px) scale(1.05) rotate(0deg) !important;
+  box-shadow: 16px 26px 0 rgba(25,22,30,.26), 0 38px 70px -14px rgba(25,22,30,.55) !important;
 }
 .hero-stage .product-left:hover {
-  transform: translateX(-24px) translateY(-20px) scale(1.06) rotate(-9deg) !important;
+  transform: translateX(-50%) translateX(-235px) translateY(20px) scale(1.03) rotate(-12deg) !important;
+  box-shadow: 16px 24px 0 rgba(25,22,30,.24), 0 32px 60px -14px rgba(25,22,30,.5) !important;
 }
 .hero-stage .product-right:hover {
-  transform: translateX(24px) translateY(-20px) scale(1.06) rotate(9deg) !important;
+  transform: translateX(-50%) translateX(235px) translateY(30px) scale(1.03) rotate(12deg) !important;
+  box-shadow: 16px 24px 0 rgba(25,22,30,.24), 0 32px 60px -14px rgba(25,22,30,.5) !important;
 }
 
-/* Base resting positions: Center phone is anchor; left & right cards overlap shoulders symmetrically */
+/* Base resting positions:
+   - Middle phone is the MAIN ONE on top (z-index: 6).
+   - Side cards sit tucked UNDER the middle phone (z-index: 2 and 3), mostly hidden, peeking just slightly!
+   - When cursor leaves, they close by back into these tucked positions. */
 .product-center {
-  z-index: 3;
+  z-index: 6;
   top: 12px;
   left: 50%;
-  width: 226px;
-  padding: 8px;
+  width: 254px;
+  padding: 10px;
+  border-width: 8px;
+  border-radius: 28px;
   background: var(--ink);
   transform: translateX(-50%) rotate(0deg);
 }
 .product-left {
-  z-index: 1;
-  top: 88px;
-  left: calc(50% - 248px);
-  width: 195px;
-  padding: 12px 12px 10px;
+  z-index: 2;
+  top: 58px;
+  left: 50%;
+  width: 224px;
+  padding: 14px 14px 12px;
   background: var(--cyan);
-  transform: rotate(-7deg);
+  transform: translateX(-50%) translateX(-42px) translateY(14px) rotate(-3.5deg) scale(0.92);
+  opacity: 0.94;
 }
 .product-right {
-  z-index: 2;
-  top: 112px;
-  left: calc(50% + 52px);
-  width: 195px;
-  padding: 12px 12px 10px;
+  z-index: 3;
+  top: 72px;
+  left: 50%;
+  width: 224px;
+  padding: 14px 14px 12px;
   background: var(--pink);
-  transform: rotate(7deg);
+  transform: translateX(-50%) translateX(42px) translateY(20px) rotate(3.5deg) scale(0.92);
+  opacity: 0.94;
 }
 
-/* Entrance pop-up & pop-out triggered on reload / initial load */
+/* Page reload / entrance:
+   Phone pops up, cards peep up from both sides under the middle one, then close by into tucked resting state */
 .hero-stage.is-popping .product-center {
-  animation: heroPhonePop 0.85s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: heroPhonePop 1.4s cubic-bezier(0.34, 1.3, 0.64, 1);
 }
 .hero-stage.is-popping .product-left {
-  animation: heroLeftPopOut 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
+  animation: heroLeftPeep 1.4s cubic-bezier(0.34, 1.25, 0.64, 1) 0.1s;
 }
 .hero-stage.is-popping .product-right {
-  animation: heroRightPopOut 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) 0.18s;
+  animation: heroRightPeep 1.4s cubic-bezier(0.34, 1.25, 0.64, 1) 0.16s;
 }
 
 @keyframes heroPhonePop {
   0% {
     opacity: 0;
-    transform: translateX(-50%) translateY(95px) scale(0.75);
+    transform: translateX(-50%) translateY(100px) scale(0.75);
     filter: blur(5px);
   }
-  60% {
-    transform: translateX(-50%) translateY(-14px) scale(1.04) rotate(0deg);
+  38% {
+    transform: translateX(-50%) translateY(-14px) scale(1.03) rotate(0deg);
     opacity: 1;
     filter: blur(0);
   }
-  80% {
-    transform: translateX(-50%) translateY(4px) scale(0.99) rotate(0deg);
+  60% {
+    transform: translateX(-50%) translateY(3px) scale(0.99) rotate(0deg);
   }
   100% {
     opacity: 1;
     transform: translateX(-50%) translateY(0) scale(1) rotate(0deg);
   }
 }
-@keyframes heroLeftPopOut {
+
+@keyframes heroLeftPeep {
   0% {
     opacity: 0;
-    transform: translateX(115px) translateY(45px) scale(0.6) rotate(0deg);
-    filter: blur(5px);
+    transform: translateX(-50%) translateX(0px) translateY(60px) scale(0.75) rotate(0deg);
+    filter: blur(4px);
   }
-  65% {
-    transform: translateX(-24px) translateY(-12px) scale(1.05) rotate(-10deg);
+  38% {
+    /* Peeps / fans out from under the middle phone */
     opacity: 1;
+    transform: translateX(-50%) translateX(-220px) translateY(24px) rotate(-10deg) scale(1);
     filter: blur(0);
   }
-  85% {
-    transform: translateX(4px) translateY(2px) scale(0.99) rotate(-6.5deg);
+  62% {
+    /* Holds the peep so the user sees both sides clearly peeping out */
+    transform: translateX(-50%) translateX(-215px) translateY(24px) rotate(-9.5deg) scale(1);
   }
   100% {
-    opacity: 1;
-    transform: translateX(0) translateY(0) scale(1) rotate(-7deg);
+    /* Closes back by, tucked under the middle phone */
+    transform: translateX(-50%) translateX(-42px) translateY(14px) rotate(-3.5deg) scale(0.92);
+    opacity: 0.94;
   }
 }
-@keyframes heroRightPopOut {
+
+@keyframes heroRightPeep {
   0% {
     opacity: 0;
-    transform: translateX(-115px) translateY(45px) scale(0.6) rotate(0deg);
-    filter: blur(5px);
+    transform: translateX(-50%) translateX(0px) translateY(60px) scale(0.75) rotate(0deg);
+    filter: blur(4px);
   }
-  65% {
-    transform: translateX(24px) translateY(-12px) scale(1.05) rotate(10deg);
+  38% {
+    /* Peeps / fans out from under the middle phone */
     opacity: 1;
+    transform: translateX(-50%) translateX(220px) translateY(34px) rotate(10deg) scale(1);
     filter: blur(0);
   }
-  85% {
-    transform: translateX(-4px) translateY(2px) scale(0.99) rotate(6.5deg);
+  62% {
+    /* Holds the peep */
+    transform: translateX(-50%) translateX(215px) translateY(34px) rotate(9.5deg) scale(1);
   }
   100% {
-    opacity: 1;
-    transform: translateX(0) translateY(0) scale(1) rotate(7deg);
+    /* Closes back by, tucked under the middle phone */
+    transform: translateX(-50%) translateX(42px) translateY(20px) rotate(3.5deg) scale(0.92);
+    opacity: 0.94;
   }
 }
 @keyframes heroBadgePop {
@@ -289,13 +306,13 @@ h1, h2, h3, p { margin-top: 0; }
 .mini-top { display: flex; align-items: center; gap: 5px; padding-bottom: 9px; font-size: 7px; font-weight: 800; letter-spacing: .09em; }.mini-top b { margin-left: auto; font-size: 13px; }.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--plum); }.status-dot.orange { background: var(--coral); }
 .mini-caption { margin: 10px 0 0; font-size: 9px; font-weight: 800; letter-spacing: .06em; text-align: center; text-transform: uppercase; }
 .moderation-screen { padding: 13px; border-radius: 12px; background: var(--plum); color: white; }.moderation-screen p { margin-bottom: 2px; font-size: 10px; font-weight: 700; }.moderation-screen strong { font-family: var(--display); font-size: 43px; letter-spacing: -.03em; line-height: 1; }.meter { height: 7px; margin: 9px 0; overflow: hidden; border-radius: 6px; background: rgba(255,255,255,.3); }.meter i { display: block; width: 80%; height: 100%; border-radius: inherit; background: var(--lime); }.tiny-tags { display: flex; gap: 3px; }.tiny-tags span { padding: 3px 4px; border-radius: 4px; background: rgba(255,255,255,.17); font-size: 6px; text-transform: uppercase; }
-.phone-shell { position: relative; min-height: 293px; padding: 27px 13px 12px; overflow: hidden; border-radius: 18px; background: var(--cream); }.phone-notch { position: absolute; top: 7px; left: 50%; width: 72px; height: 14px; border-radius: 0 0 11px 11px; background: var(--ink); transform: translateX(-50%); }.app-header { display: flex; justify-content: space-between; font-size: 9px; font-weight: 700; }.app-header b { color: var(--coral); }.voice-wave { display: flex; align-items: center; justify-content: center; gap: 3px; height: 114px; }.voice-wave i { width: 5px; border-radius: 9px; background: var(--plum); animation: sound 1.25s ease-in-out infinite; }.voice-wave i:nth-child(1), .voice-wave i:nth-child(9) { height: 19px; }.voice-wave i:nth-child(2), .voice-wave i:nth-child(8) { height: 36px; animation-delay: -.2s; }.voice-wave i:nth-child(3), .voice-wave i:nth-child(7) { height: 55px; animation-delay: -.4s; }.voice-wave i:nth-child(4), .voice-wave i:nth-child(6) { height: 72px; animation-delay: -.7s; }.voice-wave i:nth-child(5) { height: 92px; background: var(--coral); animation-delay: -.5s; }.phone-question { margin-bottom: 14px; font-size: 13px; font-weight: 700; line-height: 1.18; }.chat-pill { display: flex; align-items: center; justify-content: space-between; padding: 8px 9px; border-radius: 12px; background: var(--ink); color: white; font-size: 8px; }.chat-pill b { display: grid; width: 18px; height: 18px; border-radius: 50%; place-items: center; background: var(--lime); color: var(--ink); font-size: 13px; }
-.creator-screen { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 8px; border-radius: 12px; background: #fff8e9; }.creator-card { display: flex; min-height: 50px; padding: 7px; border-radius: 7px; flex-direction: column; font-size: 7px; }.creator-card b { margin-top: auto; font-family: var(--display); font-size: 19px; }.pink-card { background: var(--pink); }.lime-card { background: var(--lime); }.cream-card { background: var(--sun); }.creator-screen p { grid-column: 1/-1; margin: 2px 1px 0; font-size: 8px; font-weight: 700; }
+.phone-shell { position: relative; min-height: 330px; padding: 29px 14px 14px; overflow: hidden; border-radius: 20px; background: var(--cream); }.phone-notch { position: absolute; top: 7px; left: 50%; width: 78px; height: 14px; border-radius: 0 0 12px 12px; background: var(--ink); transform: translateX(-50%); }.app-header { display: flex; justify-content: space-between; font-size: 9.5px; font-weight: 700; }.app-header b { color: var(--coral); }.voice-wave { display: flex; align-items: center; justify-content: center; gap: 3.5px; height: 122px; }.voice-wave i { width: 5px; border-radius: 9px; background: var(--plum); animation: sound 1.25s ease-in-out infinite; }.voice-wave i:nth-child(1), .voice-wave i:nth-child(9) { height: 21px; }.voice-wave i:nth-child(2), .voice-wave i:nth-child(8) { height: 40px; animation-delay: -.2s; }.voice-wave i:nth-child(3), .voice-wave i:nth-child(7) { height: 60px; animation-delay: -.4s; }.voice-wave i:nth-child(4), .voice-wave i:nth-child(6) { height: 80px; animation-delay: -.7s; }.voice-wave i:nth-child(5) { height: 102px; background: var(--coral); animation-delay: -.5s; }.phone-question { margin-bottom: 14px; font-size: 14px; font-weight: 700; line-height: 1.2; }.chat-pill { display: flex; align-items: center; justify-content: space-between; padding: 9px 10px; border-radius: 12px; background: var(--ink); color: white; font-size: 8.5px; }.chat-pill b { display: grid; width: 19px; height: 19px; border-radius: 50%; place-items: center; background: var(--lime); color: var(--ink); font-size: 13px; }
+.creator-screen { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 9px; border-radius: 13px; background: #fff8e9; }.creator-card { display: flex; min-height: 54px; padding: 8px; border-radius: 8px; flex-direction: column; font-size: 7.5px; }.creator-card b { margin-top: auto; font-family: var(--display); font-size: 21px; }.pink-card { background: var(--pink); }.lime-card { background: var(--lime); }.cream-card { background: var(--sun); }.creator-screen p { grid-column: 1/-1; margin: 3px 1px 0; font-size: 8.5px; font-weight: 700; }
 
 /* === 3 INTERACTIVE ORBIT BADGES WITH RESPONSIVE TOUCH & LIVELY VIBES === */
 .orbit {
   position: absolute;
-  z-index: 4;
+  z-index: 7;
   border: 3px solid var(--ink);
   border-radius: 50%;
   cursor: pointer;
@@ -306,8 +323,8 @@ h1, h2, h3, p { margin-top: 0; }
 
 /* Badge 1: Top-Right "LLM" Live Pulse Badge */
 .orbit-one {
-  top: 32px;
-  right: calc(50% - 275px);
+  top: 24px;
+  right: calc(50% - 295px);
   width: 68px;
   height: 68px;
   padding: 0;
@@ -353,7 +370,7 @@ h1, h2, h3, p { margin-top: 0; }
 /* Badge 2: Lower-Left "SHIP IT" Rocket Badge (Replaced plain static white with tactile vibrant stamp) */
 .orbit-two {
   bottom: 18px;
-  left: calc(50% - 200px);
+  left: calc(50% - 240px);
   width: 90px;
   height: 90px;
   padding: 0;
@@ -415,7 +432,7 @@ h1, h2, h3, p { margin-top: 0; }
 /* Badge 3: Lower-Right "IDEA → LIVE" Spinning Stamp Badge */
 .hero-sticker {
   position: absolute;
-  z-index: 5;
+  z-index: 7;
   bottom: 12px;
   left: calc(50% + 185px);
   width: 96px;

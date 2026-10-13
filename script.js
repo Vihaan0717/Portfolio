@@ -697,19 +697,21 @@
     });
   });
 
-  // === HERO 3-CARD STAGE: POP ENTRANCE ON RELOAD & ACTIVE 3D CURSOR INTERACTION ===
+  // === HERO 3-CARD STAGE: PEEP ENTRANCE ON RELOAD & OPEN/CLOSE ON CURSOR HOVER ===
   const heroStage = document.querySelector('.hero-stage');
   if (heroStage) {
     const cardCenter = heroStage.querySelector('.product-center');
     const cardLeft = heroStage.querySelector('.product-left');
     const cardRight = heroStage.querySelector('.product-right');
 
-    // On page load or reload: clean up is-popping class once entrance finishes so transforms are free
+    // On page load or reload: clean up is-popping class once entrance peep finishes so transforms are free
     let popTimer = setTimeout(() => {
       heroStage.classList.remove('is-popping');
-    }, 1100);
+    }, 1500);
 
     let isTracking = false;
+    let targetOpen = 0; // 0 = closed by (tucked under), 1 = open up
+    let currentOpen = 0;
     let targetX = 0;
     let targetY = 0;
     let currentX = 0;
@@ -717,40 +719,72 @@
     let rafId = null;
 
     const renderCardTransforms = () => {
-      // Fluid linear interpolation (lerp) for buttery 60fps tracking
-      currentX += (targetX - currentX) * 0.16;
-      currentY += (targetY - currentY) * 0.16;
+      // Fluid linear interpolation for open/close state and cursor tracking
+      currentOpen += (targetOpen - currentOpen) * 0.12;
+      currentX += (targetX - currentX) * 0.14;
+      currentY += (targetY - currentY) * 0.14;
 
-      // 1. Center Phone: tracks cursor with elevation, subtle depth tilt, and float
+      // When open, side cards fan out to ±220px from under the phone. When closed, tuck in to ±42px.
+      const leftX = -(42 + currentOpen * 178) + currentX * 18;
+      const leftY = 14 + currentOpen * 10 + currentY * 12;
+      const leftRot = -3.5 - currentOpen * 6.5 + currentX * 3.5;
+      const leftScale = 0.92 + currentOpen * 0.08;
+
+      const rightX = (42 + currentOpen * 178) + currentX * 18;
+      const rightY = 20 + currentOpen * 14 + currentY * 12;
+      const rightRot = 3.5 + currentOpen * 6.5 + currentX * 3.5;
+      const rightScale = 0.92 + currentOpen * 0.08;
+
+      const centerY = -currentOpen * 14 + currentY * 14;
+      const centerRot = currentX * 3.5;
+
       if (cardCenter && !cardCenter.matches(':hover')) {
-        cardCenter.style.transform = `translateX(calc(-50% + ${currentX * 18}px)) translateY(${currentY * 16}px) rotate(${currentX * 4}deg) scale(1.01)`;
+        cardCenter.style.transform = `translateX(calc(-50% + ${currentX * 14}px)) translateY(${centerY}px) rotate(${centerRot}deg) scale(${1 + currentOpen * 0.02})`;
       }
 
-      // 2. Left Card: fans dynamically to the left, shifts with parallax depth
       if (cardLeft && !cardLeft.matches(':hover')) {
-        cardLeft.style.transform = `translateX(${currentX * 24 - 10}px) translateY(${currentY * 14 - 6}px) rotate(${-7 + currentX * 6}deg) scale(1.01)`;
+        cardLeft.style.transform = `translateX(-50%) translateX(${leftX}px) translateY(${leftY}px) rotate(${leftRot}deg) scale(${leftScale})`;
+        cardLeft.style.opacity = `${0.94 + currentOpen * 0.06}`;
       }
 
-      // 3. Right Card: fans dynamically to the right, shifts with parallax depth
       if (cardRight && !cardRight.matches(':hover')) {
-        cardRight.style.transform = `translateX(${currentX * 24 + 10}px) translateY(${currentY * 14 - 6}px) rotate(${7 + currentX * 6}deg) scale(1.01)`;
+        cardRight.style.transform = `translateX(-50%) translateX(${rightX}px) translateY(${rightY}px) rotate(${rightRot}deg) scale(${rightScale})`;
+        cardRight.style.opacity = `${0.94 + currentOpen * 0.06}`;
       }
 
-      if (isTracking || Math.abs(targetX - currentX) > 0.002 || Math.abs(targetY - currentY) > 0.002) {
+      const isStillAnimating = isTracking ||
+        Math.abs(targetOpen - currentOpen) > 0.003 ||
+        Math.abs(targetX - currentX) > 0.003 ||
+        Math.abs(targetY - currentY) > 0.003;
+
+      if (isStillAnimating) {
         rafId = requestAnimationFrame(renderCardTransforms);
       } else {
         rafId = null;
+        // If fully closed and not tracking, clear inline styles so CSS handles resting state cleanly
+        if (!isTracking && targetOpen === 0 && currentOpen < 0.01) {
+          if (cardCenter) cardCenter.style.transform = '';
+          if (cardLeft) { cardLeft.style.transform = ''; cardLeft.style.opacity = ''; }
+          if (cardRight) { cardRight.style.transform = ''; cardRight.style.opacity = ''; }
+        }
       }
     };
 
-    // Tracking on pointer/mouse move across the stage
+    const handleStagePointerEnter = () => {
+      clearTimeout(popTimer);
+      heroStage.classList.remove('is-popping');
+      heroStage.classList.add('is-tracking');
+      targetOpen = 1; // Open up sides from under the main one
+      if (!rafId) rafId = requestAnimationFrame(renderCardTransforms);
+    };
+
     const handleStagePointerMove = (e) => {
       clearTimeout(popTimer);
       heroStage.classList.remove('is-popping');
       heroStage.classList.add('is-tracking');
+      targetOpen = 1;
 
       const rect = heroStage.getBoundingClientRect();
-      // Calculate normalized position (-1 to 1) from stage center
       targetX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
       targetY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
       targetX = Math.max(-1.1, Math.min(1.1, targetX));
@@ -758,41 +792,37 @@
 
       if (!isTracking) {
         isTracking = true;
-        if (!rafId) rafId = requestAnimationFrame(renderCardTransforms);
       }
+      if (!rafId) rafId = requestAnimationFrame(renderCardTransforms);
     };
 
-    heroStage.addEventListener('mousemove', handleStagePointerMove);
-    heroStage.addEventListener('pointermove', handleStagePointerMove);
-
-    // Mouse leave: smoothly return cards to perfect resting positions
     const handleStagePointerLeave = () => {
       isTracking = false;
+      targetOpen = 0; // Close by (tuck back under the middle one)
       targetX = 0;
       targetY = 0;
       heroStage.classList.remove('is-tracking');
-
-      setTimeout(() => {
-        if (!isTracking) {
-          if (cardCenter && !cardCenter.matches(':hover')) cardCenter.style.transform = '';
-          if (cardLeft && !cardLeft.matches(':hover')) cardLeft.style.transform = '';
-          if (cardRight && !cardRight.matches(':hover')) cardRight.style.transform = '';
-        }
-      }, 350);
+      if (!rafId) rafId = requestAnimationFrame(renderCardTransforms);
     };
 
+    heroStage.addEventListener('mouseenter', handleStagePointerEnter);
+    heroStage.addEventListener('pointerenter', handleStagePointerEnter);
+    heroStage.addEventListener('mousemove', handleStagePointerMove);
+    heroStage.addEventListener('pointermove', handleStagePointerMove);
     heroStage.addEventListener('mouseleave', handleStagePointerLeave);
     heroStage.addEventListener('pointerleave', handleStagePointerLeave);
 
-    // Replay entrance pop-out on page reload / navigation
+    // Replay entrance peep on page reload / navigation
     window.addEventListener('pageshow', () => {
       heroStage.classList.remove('is-popping');
       void heroStage.offsetWidth;
       heroStage.classList.add('is-popping');
+      targetOpen = 0;
+      currentOpen = 0;
       clearTimeout(popTimer);
       popTimer = setTimeout(() => {
         heroStage.classList.remove('is-popping');
-      }, 1100);
+      }, 1500);
     });
   }
 })();
