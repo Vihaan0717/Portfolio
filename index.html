@@ -14,6 +14,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Caveat:wght@500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Londrina+Solid:wght@300;400;900&family=Permanent+Marker&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css?v=3" />
+    <link rel="stylesheet" href="arcade.css?v=1" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -49,7 +50,7 @@
       <nav class="desktop-nav" aria-label="Primary navigation">
         <a href="#work">Selected work</a>
         <a href="#live-lab">Live lab</a>
-        <a href="#play">Play games</a>
+        <a href="#play">The Arcade</a>
         <a href="#journey">Milestones</a>
         <a href="#plans">Plans</a>
         <a href="#services">What I build</a>
@@ -70,7 +71,7 @@
       <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation">
         <a href="#work">Selected work</a>
         <a href="#live-lab">Live lab</a>
-        <a href="#play">Play games</a>
+        <a href="#play">The Arcade</a>
         <a href="#journey">Milestones</a>
         <a href="#plans">Plans</a>
         <a href="#services">What I build</a>
@@ -336,152 +337,204 @@
         </div>
       </section>
 
-      <!-- ===================== INTERACTIVE GAME ZONE ===================== -->
-      <section class="game-zone" id="play" aria-labelledby="game-zone-title">
-        <div class="game-zone-blob gz-blob-a" aria-hidden="true"></div>
-        <div class="game-zone-blob gz-blob-b" aria-hidden="true"></div>
-        <div class="game-zone-blob gz-blob-c" aria-hidden="true"></div>
-        <div class="gz-cloud gz-cloud-a" aria-hidden="true"></div>
-        <div class="gz-cloud gz-cloud-b" aria-hidden="true"></div>
+      <!-- ===================== THE MINI ARCADE ===================== -->
+      <section class="arcade-zone" id="play" aria-labelledby="arcade-title">
+        <div class="arcade-blob arcade-blob-a" aria-hidden="true"></div>
+        <div class="arcade-blob arcade-blob-b" aria-hidden="true"></div>
+        <div class="arcade-blob arcade-blob-c" aria-hidden="true"></div>
 
         <div class="container">
-          <div class="gz-header" data-reveal>
-            <p class="gz-eyebrow"><span class="gz-live-pip"></span> LIVE PLAY ZONE</p>
-            <h2 id="game-zone-title">THINK YOU<br><em>know</em> THIS STUFF?</h2>
-            <p class="gz-sub">Three mini-games to test your AI &amp; tech instincts. No login, no signup — just play.</p>
-            <div class="gz-badges">
-              <span>⚡ INSTANT</span>
-              <span>🧠 AI QUIZ</span>
-              <span>⌨️ SPEED TYPE</span>
-              <span>🎴 SKILL MATCH</span>
-            </div>
+          <div class="arcade-header" data-reveal>
+            <p class="arcade-eyebrow"><span class="pulse-live"></span> TAKE A BREAK</p>
+            <h2 class="arcade-title" id="arcade-title">The Mini <em>Arcade</em></h2>
+            <p class="arcade-sub">Four quick games. A little competition. No downloads.</p>
           </div>
 
-          <!-- Tab switcher (Tamada-style folder tabs) -->
-          <div class="gz-tabs" role="tablist" aria-label="Game selection">
-            <button class="gz-tab gz-tab-blue is-active" id="tab-quiz" role="tab" aria-selected="true" aria-controls="panel-quiz" data-gz-tab="quiz">
-              🧠 AI Quiz
-            </button>
-            <button class="gz-tab gz-tab-green" id="tab-speed" role="tab" aria-selected="false" aria-controls="panel-speed" data-gz-tab="speed">
-              ⌨️ Speed Type
-            </button>
-            <button class="gz-tab gz-tab-orange" id="tab-match" role="tab" aria-selected="false" aria-controls="panel-match" data-gz-tab="match">
-              🎴 Skill Match
-            </button>
+          <!-- 4-Card Game Selection Grid -->
+          <div class="arcade-card-grid" id="arcade-card-grid" data-reveal>
+            <!-- Game 1: Snake -->
+            <article class="arcade-card arcade-card-snake">
+              <div class="arcade-card-top">
+                <div class="arcade-card-icon" aria-hidden="true">🐍</div>
+                <span class="arcade-best-pill" id="best-badge-snake">No record</span>
+              </div>
+              <div class="arcade-card-body">
+                <h3>Snake</h3>
+                <p>Eat, grow, and beat your high score.</p>
+              </div>
+              <button class="arcade-play-btn" type="button" data-launch-game="snake">
+                <span>Play Snake</span><b>↗</b>
+              </button>
+            </article>
+
+            <!-- Game 2: Brick Breaker -->
+            <article class="arcade-card arcade-card-brick">
+              <div class="arcade-card-top">
+                <div class="arcade-card-icon" aria-hidden="true">🧱</div>
+                <span class="arcade-best-pill" id="best-badge-brick">No record</span>
+              </div>
+              <div class="arcade-card-body">
+                <h3>Brick Breaker</h3>
+                <p>Break the bricks. Keep the ball alive.</p>
+              </div>
+              <button class="arcade-play-btn" type="button" data-launch-game="brick">
+                <span>Break Bricks</span><b>↗</b>
+              </button>
+            </article>
+
+            <!-- Game 3: Memory Match -->
+            <article class="arcade-card arcade-card-memory">
+              <div class="arcade-card-top">
+                <div class="arcade-card-icon" aria-hidden="true">🎴</div>
+                <span class="arcade-best-pill" id="best-badge-memory">No record</span>
+              </div>
+              <div class="arcade-card-body">
+                <h3>Memory Match</h3>
+                <p>Test your memory and find every pair.</p>
+              </div>
+              <button class="arcade-play-btn" type="button" data-launch-game="memory">
+                <span>Match Cards</span><b>↗</b>
+              </button>
+            </article>
+
+            <!-- Game 4: Rock Paper Scissors -->
+            <article class="arcade-card arcade-card-rps">
+              <div class="arcade-card-top">
+                <div class="arcade-card-icon" aria-hidden="true">✂️</div>
+                <span class="arcade-best-pill" id="best-badge-rps">0 streak</span>
+              </div>
+              <div class="arcade-card-body">
+                <h3>Rock Paper Scissors</h3>
+                <p>Challenge the computer and build a winning streak.</p>
+              </div>
+              <button class="arcade-play-btn" type="button" data-launch-game="rps">
+                <span>Play RPS</span><b>↗</b>
+              </button>
+            </article>
           </div>
 
-          <!-- =========== GAME 1: AI Quiz =========== -->
-          <div class="gz-panel gz-panel-blue is-active" id="panel-quiz" role="tabpanel" aria-labelledby="tab-quiz" data-gz-panel="quiz">
-            <div class="gz-panel-inner">
-              <div class="gz-game-copy">
-                <span class="gz-game-number">01</span>
-                <h3>THE AI<br><em>CHALLENGE.</em></h3>
-                <p>Five rapid-fire questions about AI, agents, and modern dev. Get 4+ right to pass. Each question is timed — think fast.</p>
-                <div class="gz-score-row" id="quiz-scoreboard" aria-live="polite">
-                  <span class="gz-score-chip" id="quiz-score-display">0 / 5</span>
-                  <span class="gz-pass-chip" id="quiz-result" hidden></span>
-                </div>
-                <div class="gz-progress-bar-wrap" aria-label="Quiz progress">
-                  <div class="gz-progress-bar" id="quiz-progress" style="width:0%"></div>
-                </div>
+          <!-- Active In-Page Gameplay Shell View -->
+          <div class="arcade-play-shell" id="arcade-play-shell" hidden>
+            <div class="arcade-hud-bar">
+              <button class="arcade-back-btn" id="arcade-back-btn" type="button">
+                <span>← Back to Arcade</span>
+              </button>
+              <div class="arcade-hud-center">
+                <h3 id="arcade-active-title">Game Title</h3>
               </div>
-              <div class="gz-game-stage">
-                <div class="gz-quiz-start" id="quiz-start-screen">
-                  <div class="gz-big-emoji">🧠</div>
-                  <h4>Ready to be tested?</h4>
-                  <p>5 questions &middot; 15 seconds each &middot; AI &amp; Tech focused</p>
-                  <button class="gz-play-btn gz-btn-blue" id="quiz-start-btn" type="button">START QUIZ <span>→</span></button>
-                </div>
-                <div class="gz-quiz-question" id="quiz-question-screen" hidden>
-                  <div class="gz-timer-ring" aria-hidden="true">
-                    <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="5"/><circle class="gz-timer-arc" cx="30" cy="30" r="26" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-dasharray="163" stroke-dashoffset="0"/></svg>
-                    <span id="quiz-timer-display">15</span>
-                  </div>
-                  <p class="gz-q-number" id="quiz-q-number">Q1 / 5</p>
-                  <h4 id="quiz-q-text">Question text loads here</h4>
-                  <div class="gz-options" id="quiz-options"></div>
-                </div>
-                <div class="gz-quiz-end" id="quiz-end-screen" hidden>
-                  <div class="gz-result-emoji" id="quiz-end-emoji">🏆</div>
-                  <h4 id="quiz-end-title">Nice work!</h4>
-                  <p>You scored <strong id="quiz-final-score"></strong> out of 5.</p>
-                  <button class="gz-play-btn gz-btn-blue" id="quiz-retry-btn" type="button">PLAY AGAIN <span>↺</span></button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- =========== GAME 2: Speed Type =========== -->
-          <div class="gz-panel gz-panel-green" id="panel-speed" role="tabpanel" aria-labelledby="tab-speed" data-gz-panel="speed" hidden>
-            <div class="gz-panel-inner">
-              <div class="gz-game-copy">
-                <span class="gz-game-number">02</span>
-                <h3>SPEED<br><em>TYPE.</em></h3>
-                <p>Type tech keywords before time runs out. Each correct word = points. How fast can your fingers move?</p>
-                <div class="gz-score-row" aria-live="polite">
-                  <span class="gz-score-chip gz-chip-green" id="speed-score-display">0 pts</span>
-                  <span class="gz-time-chip" id="speed-time-display">30s</span>
-                </div>
-                <div class="gz-progress-bar-wrap" aria-label="Speed type time remaining">
-                  <div class="gz-progress-bar gz-progress-green" id="speed-progress" style="width:100%"></div>
-                </div>
-              </div>
-              <div class="gz-game-stage">
-                <div class="gz-quiz-start" id="speed-start-screen">
-                  <div class="gz-big-emoji">⌨️</div>
-                  <h4>How fast can you type?</h4>
-                  <p>30 seconds &middot; Tech keywords &middot; No backspace penalty</p>
-                  <button class="gz-play-btn gz-btn-green" id="speed-start-btn" type="button">START TYPING <span>→</span></button>
-                </div>
-                <div class="gz-speed-play" id="speed-play-screen" hidden>
-                  <div class="gz-word-display" id="speed-word-display" aria-live="polite"></div>
-                  <input class="gz-type-input" id="speed-type-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="type the word above…" aria-label="Type the displayed word">
-                  <div class="gz-word-feedback" id="speed-feedback" aria-live="assertive"></div>
-                  <div class="gz-word-streak" id="speed-streak">Streak: <b id="speed-streak-val">0</b> 🔥</div>
-                </div>
-                <div class="gz-quiz-end" id="speed-end-screen" hidden>
-                  <div class="gz-result-emoji">⚡</div>
-                  <h4 id="speed-end-title">Time's up!</h4>
-                  <p>You scored <strong id="speed-final-score"></strong> points</p>
-                  <button class="gz-play-btn gz-btn-green" id="speed-retry-btn" type="button">PLAY AGAIN <span>↺</span></button>
-                </div>
+              <div class="arcade-hud-scores">
+                <span class="arcade-score-pill" id="arcade-active-best">Best: 0</span>
+                <span class="arcade-score-pill score-highlight" id="arcade-active-score">Score: 0</span>
               </div>
             </div>
-          </div>
 
-          <!-- =========== GAME 3: Skill Match =========== -->
-          <div class="gz-panel gz-panel-orange" id="panel-match" role="tabpanel" aria-labelledby="tab-match" data-gz-panel="match" hidden>
-            <div class="gz-panel-inner">
-              <div class="gz-game-copy">
-                <span class="gz-game-number">03</span>
-                <h3>SKILL<br><em>MATCH.</em></h3>
-                <p>Flip cards to find matching tech skill pairs. All 8 pairs matched = you win. Fewer flips = better score.</p>
-                <div class="gz-score-row" aria-live="polite">
-                  <span class="gz-score-chip gz-chip-orange" id="match-flips-display">0 flips</span>
-                  <span class="gz-score-chip gz-chip-orange" id="match-pairs-display">0 / 8 pairs</span>
+            <!-- Game 1 Arena: Snake -->
+            <div class="arcade-game-arena arcade-canvas-wrap" data-game-arena="snake" hidden>
+              <canvas class="arcade-canvas" id="snake-canvas" width="480" height="480" aria-label="Snake Game Board"></canvas>
+              <div class="arcade-controls-toolbar">
+                <button class="arcade-tool-btn" id="snake-pause-btn" type="button">Pause ❚❚</button>
+                <button class="arcade-tool-btn" id="snake-restart-btn" type="button">Restart ↺</button>
+              </div>
+              <p class="arcade-control-hint">Use Arrow keys or WASD to navigate. Spacebar to pause.</p>
+              <!-- Virtual D-Pad for Touch/Mobile -->
+              <div class="arcade-dpad" aria-label="Mobile Directional Controls">
+                <button class="dpad-btn dpad-up" type="button" data-snake-dir="up" aria-label="Up">▲</button>
+                <button class="dpad-btn dpad-left" type="button" data-snake-dir="left" aria-label="Left">◀</button>
+                <button class="dpad-btn dpad-down" type="button" data-snake-dir="down" aria-label="Down">▼</button>
+                <button class="dpad-btn dpad-right" type="button" data-snake-dir="right" aria-label="Right">▶</button>
+              </div>
+            </div>
+
+            <!-- Game 2 Arena: Brick Breaker -->
+            <div class="arcade-game-arena arcade-canvas-wrap" data-game-arena="brick" hidden>
+              <div class="brick-sub-meta">
+                <span id="brick-level-display">Lvl 1</span>
+                <span>Lives: <span id="brick-lives-display">❤️❤️❤️</span></span>
+              </div>
+              <canvas class="arcade-canvas" id="brick-canvas" width="480" height="500" aria-label="Brick Breaker Game Board"></canvas>
+              <div class="arcade-controls-toolbar">
+                <button class="arcade-tool-btn" id="brick-serve-btn" type="button">Launch Ball 🚀</button>
+                <button class="arcade-tool-btn" id="brick-restart-btn" type="button">Restart ↺</button>
+              </div>
+              <p class="arcade-control-hint">Move with Left/Right keys, A/D, drag/touch canvas. Press Spacebar or Launch to serve.</p>
+              <div class="brick-touch-bar" aria-label="Touch Paddle Controls">
+                <button class="brick-touch-btn" id="brick-left-btn" type="button">◀ PADDLE LEFT</button>
+                <button class="brick-touch-btn" id="brick-right-btn" type="button">PADDLE RIGHT ▶</button>
+              </div>
+            </div>
+
+            <!-- Game 3 Arena: Memory Match -->
+            <div class="arcade-game-arena arcade-memory-arena" data-game-arena="memory" hidden>
+              <div class="memory-sub-meta">
+                <span>Time: <b id="memory-timer">0:00</b></span>
+                <span>Pairs: <b id="memory-pairs">0 / 8 pairs</b></span>
+                <button class="arcade-tool-btn" id="memory-restart-btn" type="button">Shuffle ↺</button>
+              </div>
+              <div class="arcade-memory-board" id="memory-board" role="grid" aria-label="Memory Card Board"></div>
+              <p class="arcade-control-hint">Click or tap cards to flip and match pairs. Beat your lowest flips record!</p>
+            </div>
+
+            <!-- Game 4 Arena: Rock Paper Scissors -->
+            <div class="arcade-game-arena arcade-rps-arena" data-game-arena="rps" hidden>
+              <div class="rps-duel-stage">
+                <div class="rps-combatant">
+                  <div class="rps-avatar-box" id="rps-arena-player">❓</div>
+                  <h4>YOU</h4>
+                </div>
+                <div class="rps-vs-badge">VS</div>
+                <div class="rps-combatant">
+                  <div class="rps-avatar-box" id="rps-arena-bot">🤖</div>
+                  <h4>BOT</h4>
                 </div>
               </div>
-              <div class="gz-game-stage">
-                <div class="gz-quiz-start" id="match-start-screen">
-                  <div class="gz-big-emoji">🎴</div>
-                  <h4>Memory + tech smarts.</h4>
-                  <p>Flip cards to find matching tech skill pairs. Fewer flips = better score.</p>
-                  <button class="gz-play-btn gz-btn-orange" id="match-start-btn" type="button">START MATCHING <span>→</span></button>
-                </div>
-                <div class="gz-match-board" id="match-board" hidden aria-label="Skill match game board" role="grid"></div>
-                <div class="gz-quiz-end" id="match-end-screen" hidden>
-                  <div class="gz-result-emoji">🏅</div>
-                  <h4 id="match-end-title">All matched!</h4>
-                  <p>You completed it in <strong id="match-final-flips"></strong> flips.</p>
-                  <button class="gz-play-btn gz-btn-orange" id="match-retry-btn" type="button">PLAY AGAIN <span>↺</span></button>
+
+              <div class="rps-banner" id="rps-result-banner">Pick your weapon below to battle!</div>
+
+              <div class="rps-weapons-row">
+                <button class="rps-weapon-btn" type="button" data-rps-choice="rock" aria-label="Choose Rock">
+                  <span class="weapon-emoji">🪨</span>
+                  <span class="weapon-name">ROCK</span>
+                  <span class="weapon-key">[Key 1 / R]</span>
+                </button>
+                <button class="rps-weapon-btn" type="button" data-rps-choice="paper" aria-label="Choose Paper">
+                  <span class="weapon-emoji">📄</span>
+                  <span class="weapon-name">PAPER</span>
+                  <span class="weapon-key">[Key 2 / P]</span>
+                </button>
+                <button class="rps-weapon-btn" type="button" data-rps-choice="scissors" aria-label="Choose Scissors">
+                  <span class="weapon-emoji">✂️</span>
+                  <span class="weapon-name">SCISSORS</span>
+                  <span class="weapon-key">[Key 3 / S]</span>
+                </button>
+              </div>
+
+              <div class="rps-stats-strip">
+                <span>Wins: <b id="rps-player-wins">0</b></span>
+                <span>Losses: <b id="rps-bot-wins">0</b></span>
+                <span>Draws: <b id="rps-draws">0</b></span>
+                <span>Streak: <b id="rps-streak-val">0</b> 🔥</span>
+                <button class="arcade-tool-btn" id="rps-reset-btn" type="button" style="padding:4px 10px; font-size:10px;">Reset</button>
+              </div>
+            </div>
+
+            <!-- Game Over / Victory Modal Celebration Overlay -->
+            <div class="arcade-modal-backdrop" id="arcade-modal" hidden>
+              <div class="arcade-modal-box">
+                <div class="arcade-modal-emoji" id="arcade-modal-emoji">🏆</div>
+                <h4 id="arcade-modal-title">Game Over!</h4>
+                <p id="arcade-modal-desc">You scored <b>0</b> points.</p>
+                <span class="arcade-record-sticker" id="arcade-modal-record" hidden>★ NEW PERSONAL RECORD!</span>
+                <div class="arcade-modal-actions">
+                  <button class="arcade-modal-btn primary" id="arcade-modal-retry" type="button">Play Again ↺</button>
+                  <button class="arcade-modal-btn secondary" id="arcade-modal-back" type="button">Back to Arcade</button>
                 </div>
               </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </section>
-      <!-- ================ END GAME ZONE ================ -->
+      <!-- ================ END THE MINI ARCADE ================ -->
 
       <!-- ===================== YEAR-BY-YEAR JOURNEY & ACHIEVEMENTS ===================== -->
       <section class="journey-zone" id="journey" aria-labelledby="journey-title">
@@ -1114,5 +1167,11 @@
     </footer>
 
     <script src="script.js?v=3"></script>
+    <script src="arcade/arcade-storage.js"></script>
+    <script src="arcade/game-snake.js"></script>
+    <script src="arcade/game-brick.js"></script>
+    <script src="arcade/game-memory.js"></script>
+    <script src="arcade/game-rps.js"></script>
+    <script src="arcade/arcade-main.js"></script>
   </body>
 </html>

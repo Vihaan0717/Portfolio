@@ -1,0 +1,799 @@
+/* ============================================================
+   KANNA LAB — THE MINI ARCADE (GEN Z RETRO-NEO BRUTALIST)
+   Scoped Styles for Snake, Brick Breaker, Memory Match & RPS
+   ============================================================ */
+
+.arcade-zone {
+  position: relative;
+  background: var(--cream);
+  padding: clamp(70px, 9vw, 120px) 0;
+  border-top: 2.5px solid var(--ink);
+  border-bottom: 2.5px solid var(--ink);
+  overflow: clip;
+}
+
+/* Background floating decorative blobs */
+.arcade-blob {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.28;
+  z-index: 0;
+}
+.arcade-blob-a { width: 340px; height: 340px; background: var(--lime); top: -80px; left: -100px; }
+.arcade-blob-b { width: 400px; height: 400px; background: var(--pink); bottom: -120px; right: -120px; }
+.arcade-blob-c { width: 280px; height: 280px; background: var(--cyan); top: 40%; right: 15%; }
+
+.arcade-zone .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Arcade Section Header */
+.arcade-header {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto clamp(36px, 5vw, 60px);
+}
+
+.arcade-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  padding: 6px 14px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--lime);
+  color: var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+  margin-bottom: 14px;
+}
+
+.arcade-eyebrow .pulse-live {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink);
+  animation: pulseLiveRing 1.8s infinite;
+}
+
+.arcade-title {
+  margin: 0 0 14px;
+  font-family: var(--display);
+  font-size: clamp(48px, 6.8vw, 84px);
+  line-height: 0.88;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.arcade-title em {
+  font-style: normal;
+  color: var(--plum);
+  position: relative;
+}
+
+.arcade-sub {
+  margin: 0;
+  font-size: clamp(15px, 1.8vw, 18px);
+  font-weight: 600;
+  color: rgba(25, 22, 30, 0.76);
+  line-height: 1.4;
+}
+
+/* 4-Card Game Selection Grid */
+.arcade-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(18px, 2.5vw, 26px);
+  align-items: stretch;
+}
+
+.arcade-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(22px, 3vw, 28px);
+  border: 2.5px solid var(--ink);
+  border-radius: 24px;
+  box-shadow: 6px 7px 0 var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  transition: transform 0.28s var(--ease-spring), box-shadow 0.28s var(--ease-spring);
+  overflow: hidden;
+}
+
+.arcade-card:hover {
+  transform: translateY(-8px) rotate(-0.5deg);
+  box-shadow: 9px 12px 0 var(--ink);
+}
+
+.arcade-card:nth-child(even):hover {
+  transform: translateY(-8px) rotate(0.8deg);
+}
+
+/* Distinct card identity themes */
+.arcade-card-snake { background: #f4ffd4; }
+.arcade-card-brick { background: #dffeff; }
+.arcade-card-memory { background: #f3ecff; }
+.arcade-card-rps { background: #ffece6; }
+
+.arcade-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.arcade-card-icon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  font-size: 28px;
+  box-shadow: 3px 4px 0 var(--ink);
+  background: white;
+}
+
+.arcade-card-snake .arcade-card-icon { background: var(--lime); }
+.arcade-card-brick .arcade-card-icon { background: var(--cyan); }
+.arcade-card-memory .arcade-card-icon { background: var(--plum); color: white; }
+.arcade-card-rps .arcade-card-icon { background: var(--coral); color: white; }
+
+.arcade-best-pill {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink);
+  background: white;
+  color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  white-space: nowrap;
+}
+
+.arcade-card-body h3 {
+  margin: 0 0 8px;
+  font-family: var(--display);
+  font-size: clamp(30px, 3.4vw, 36px);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+
+.arcade-card-body p {
+  margin: 0 0 24px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.38;
+  color: rgba(25, 22, 30, 0.72);
+}
+
+.arcade-play-btn {
+  display: inline-flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 18px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ink);
+  color: white;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  box-shadow: 3px 4px 0 var(--ink);
+  transition: transform 0.22s var(--ease-spring), background 0.22s;
+}
+
+.arcade-play-btn:hover {
+  transform: translateY(-2px);
+  background: var(--plum);
+}
+
+.arcade-card-snake .arcade-play-btn:hover { background: #2e5902; }
+.arcade-card-brick .arcade-play-btn:hover { background: #007780; }
+.arcade-card-memory .arcade-play-btn:hover { background: var(--plum); }
+.arcade-card-rps .arcade-play-btn:hover { background: var(--coral); }
+
+/* ============================================================
+   ACTIVE GAMEPLAY SHELL VIEW
+   ============================================================ */
+.arcade-play-shell {
+  background: var(--ink);
+  color: white;
+  border: 2.5px solid var(--ink);
+  border-radius: 28px;
+  padding: clamp(20px, 3.5vw, 36px);
+  box-shadow: 8px 10px 0 var(--coral);
+  position: relative;
+}
+
+/* Top HUD bar */
+.arcade-hud-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.15);
+}
+
+.arcade-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 2px solid white;
+  border-radius: 999px;
+  background: transparent;
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: transform 0.2s var(--ease-spring), background 0.2s;
+}
+
+.arcade-back-btn:hover {
+  transform: translateX(-3px);
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.arcade-hud-center h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(32px, 4vw, 44px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--lime);
+  text-align: center;
+}
+
+.arcade-hud-scores {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.arcade-score-pill {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.arcade-score-pill.score-highlight {
+  background: var(--lime);
+  color: var(--ink);
+  border-color: var(--lime);
+  box-shadow: 0 0 10px rgba(213, 255, 69, 0.4);
+}
+
+/* Canvas Viewports */
+.arcade-canvas-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.arcade-canvas {
+  display: block;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+  background: #110e16;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  max-width: 100%;
+  touch-action: none;
+}
+
+/* Instructions & Control Toolbar */
+.arcade-controls-toolbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.arcade-tool-btn {
+  padding: 9px 18px;
+  border: 2px solid white;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: transform 0.2s var(--ease-spring), background 0.2s;
+}
+
+.arcade-tool-btn:hover {
+  transform: translateY(-2px);
+  background: white;
+  color: var(--ink);
+}
+
+.arcade-control-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.65);
+  font-weight: 600;
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* On-screen Touch Controls (Mobile D-Pad for Snake) */
+.arcade-dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 52px);
+  grid-template-rows: repeat(3, 52px);
+  gap: 6px;
+  margin: 16px auto 0;
+  width: max-content;
+}
+
+.dpad-btn {
+  border: 2px solid white;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 20px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  transition: transform 0.1s, background 0.1s;
+}
+
+.dpad-btn:active {
+  transform: scale(0.92);
+  background: var(--lime);
+  color: var(--ink);
+}
+
+.dpad-up    { grid-column: 2; grid-row: 1; }
+.dpad-left  { grid-column: 1; grid-row: 2; }
+.dpad-down  { grid-column: 2; grid-row: 2; }
+.dpad-right { grid-column: 3; grid-row: 2; }
+
+/* Brick Breaker Mobile Paddle Touch Buttons */
+.brick-touch-bar {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  max-width: 480px;
+  margin: 14px auto 0;
+}
+
+.brick-touch-btn {
+  flex: 1;
+  padding: 14px;
+  border: 2px solid white;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.brick-touch-btn:active {
+  background: var(--cyan);
+  color: var(--ink);
+}
+
+.brick-sub-meta {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 12px;
+}
+
+/* ============================================================
+   GAME 3: MEMORY MATCH DOM ARENA
+   ============================================================ */
+.arcade-memory-arena {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.memory-sub-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.arcade-memory-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(8px, 2vw, 14px);
+  perspective: 1000px;
+}
+
+.arcade-mem-card {
+  aspect-ratio: 1;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  perspective: 1000px;
+}
+
+.arcade-card-flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-style: preserve-3d;
+}
+
+.arcade-mem-card.is-flipped .arcade-card-flipper,
+.arcade-mem-card.is-matched .arcade-card-flipper {
+  transform: rotateY(180deg);
+}
+
+.arcade-card-front,
+.arcade-card-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid white;
+  box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.35);
+}
+
+.arcade-card-front {
+  background: linear-gradient(145deg, #2a2538, #3e3752);
+  color: var(--lime);
+}
+
+.arcade-card-front .card-mark {
+  font-size: 24px;
+}
+
+.arcade-card-back {
+  background: linear-gradient(145deg, #5637f2, #7555ff);
+  color: white;
+  transform: rotateY(180deg);
+  padding: 6px;
+}
+
+.arcade-mem-card.is-matched .arcade-card-back {
+  background: linear-gradient(145deg, #2a944e, #3ac9bd);
+  border-color: var(--lime);
+  box-shadow: 0 0 12px rgba(213, 255, 69, 0.6);
+}
+
+.arcade-card-back .card-emoji {
+  font-size: clamp(22px, 3.5vw, 32px);
+  line-height: 1;
+}
+
+.arcade-card-back .card-tag {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   GAME 4: ROCK PAPER SCISSORS ARENA
+   ============================================================ */
+.arcade-rps-arena {
+  max-width: 580px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.rps-duel-stage {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 20px 0 28px;
+}
+
+.rps-combatant {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.rps-avatar-box {
+  width: 90px;
+  height: 90px;
+  border: 2.5px solid white;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  display: grid;
+  place-items: center;
+  font-size: 44px;
+  box-shadow: 4px 5px 0 rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s var(--ease-spring);
+}
+
+.rps-combatant h4 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 20px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.rps-vs-badge {
+  font-family: var(--display);
+  font-size: 32px;
+  color: var(--coral);
+  letter-spacing: -0.02em;
+}
+
+.rps-banner {
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  margin-bottom: 24px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+}
+
+.rps-banner.is-win {
+  background: rgba(213, 255, 69, 0.2);
+  border-color: var(--lime);
+  color: var(--lime);
+}
+
+.rps-banner.is-lose {
+  background: rgba(255, 78, 40, 0.2);
+  border-color: var(--coral);
+  color: #ff9179;
+}
+
+.rps-banner.is-draw {
+  background: rgba(255, 207, 63, 0.2);
+  border-color: var(--sun);
+  color: var(--sun);
+}
+
+.rps-weapons-row {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.rps-weapon-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 22px;
+  border: 2.5px solid white;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  cursor: pointer;
+  transition: transform 0.22s var(--ease-spring), background 0.22s, box-shadow 0.22s;
+  box-shadow: 4px 5px 0 rgba(0, 0, 0, 0.4);
+}
+
+.rps-weapon-btn:hover {
+  transform: translateY(-5px) scale(1.04);
+  background: var(--plum);
+  box-shadow: 6px 8px 0 rgba(0, 0, 0, 0.5);
+}
+
+.weapon-emoji {
+  font-size: 32px;
+}
+
+.weapon-name {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.weapon-key {
+  font-size: 9px;
+  opacity: 0.65;
+}
+
+.rps-stats-strip {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.rps-stats-strip b {
+  color: white;
+  font-size: 14px;
+}
+
+/* ============================================================
+   VICTORY & GAME OVER CELEBRATION MODAL OVERLAY
+   ============================================================ */
+.arcade-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(25, 22, 30, 0.88);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 28px;
+  z-index: 10;
+  padding: 20px;
+}
+
+.arcade-modal-box {
+  background: var(--paper);
+  color: var(--ink);
+  border: 2.5px solid var(--ink);
+  border-radius: 24px;
+  padding: clamp(26px, 4vw, 38px);
+  text-align: center;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: 8px 10px 0 var(--lime);
+  animation: modalPopIn 0.35s var(--ease-spring);
+}
+
+@keyframes modalPopIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.arcade-modal-emoji {
+  font-size: 54px;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.arcade-modal-box h4 {
+  margin: 0 0 8px;
+  font-family: var(--display);
+  font-size: 38px;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+}
+
+.arcade-modal-box p {
+  margin: 0 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(25, 22, 30, 0.78);
+}
+
+.arcade-record-sticker {
+  display: inline-block;
+  padding: 6px 14px;
+  background: var(--lime);
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-bottom: 20px;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.arcade-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.arcade-modal-btn {
+  padding: 11px 20px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--ink);
+  transition: transform 0.2s var(--ease-spring);
+}
+
+.arcade-modal-btn:hover {
+  transform: translateY(-2px);
+}
+
+.arcade-modal-btn.primary {
+  background: var(--lime);
+  color: var(--ink);
+}
+
+.arcade-modal-btn.secondary {
+  background: white;
+  color: var(--ink);
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN (Desktop, Tablet, Mobile)
+   ============================================================ */
+@media (max-width: 1080px) {
+  .arcade-card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .arcade-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .arcade-hud-bar {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .arcade-hud-center h3 {
+    margin: 8px 0;
+  }
+
+  .arcade-hud-scores {
+    justify-content: center;
+  }
+
+  .rps-duel-stage {
+    gap: 8px;
+  }
+
+  .rps-avatar-box {
+    width: 72px;
+    height: 72px;
+    font-size: 34px;
+  }
+
+  .rps-weapons-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .rps-weapon-btn {
+    flex-direction: row;
+    justify-content: center;
+    padding: 12px;
+  }
+}
