@@ -23,40 +23,129 @@
     const capabilityImage = capabilityStage.querySelector('[data-capability-image]');
     const capabilityBackImage = capabilityStage.querySelector('.choose-photo-back img');
     const capabilityLabel = capabilityStage.querySelector('[data-capability-label]');
-    let lastSide = 'right';
+    const chooseList = capabilityStage.querySelector('.choose-list');
+    let hideTimeout = null;
+    let lastZoneIndex = -1;
 
-    // Randomize polaroid clip position across the slide on each click
-    const placePreviewRandomly = () => {
+    // Dynamic spatial zones spread across the ENTIRE slide canvas
+    // Alternate sides, heights, and angles across the full section slide
+    const SLIDE_ZONES = [
+      { side: 'left',  topPct: 6,  rot: -14 },  // High Far-Left (near top of slide)
+      { side: 'right', topPct: 8,  rot: 13 },   // High Far-Right (near top of slide)
+      { side: 'left',  topPct: 24, rot: 9 },    // Upper-Mid Left
+      { side: 'right', topPct: 26, rot: -11 },  // Upper-Mid Right
+      { side: 'left',  topPct: 42, rot: -8 },   // Lower-Mid Left
+      { side: 'right', topPct: 44, rot: 10 },   // Lower-Mid Right
+      { side: 'left',  topPct: 58, rot: 12 },   // Bottom Far-Left
+      { side: 'right', topPct: 60, rot: -13 }   // Bottom Far-Right
+    ];
+
+    // Place polaroid clip dynamically anywhere on the slide WITHOUT ever overlaying the text
+    const placePreviewRandomly = (itemIndex) => {
       if (!capabilityPreview) return;
       const isMobile = window.innerWidth <= 760;
       if (isMobile) {
-        capabilityPreview.style.left = '50%';
-        capabilityPreview.style.right = 'auto';
-        capabilityPreview.style.top = 'auto';
-        capabilityPreview.style.transform = 'translateX(-50%)';
+        capabilityPreview.style.left = '';
+        capabilityPreview.style.right = '';
+        capabilityPreview.style.top = '';
+        capabilityPreview.style.bottom = '';
+        capabilityPreview.style.transform = '';
+        capabilityPreview.classList.add('is-visible');
         return;
       }
 
-      // Alternate between left and right flanks of the text list for dynamic distribution
-      const side = lastSide === 'left' ? 'right' : 'left';
-      lastSide = side;
+      // Pick zone according to item or cycle without repeating previous spot
+      let zoneIndex;
+      if (typeof itemIndex === 'number' && itemIndex >= 0) {
+        zoneIndex = itemIndex % SLIDE_ZONES.length;
+        if (zoneIndex === lastZoneIndex) {
+          zoneIndex = (zoneIndex + 1) % SLIDE_ZONES.length;
+        }
+      } else {
+        do {
+          zoneIndex = Math.floor(Math.random() * SLIDE_ZONES.length);
+        } while (zoneIndex === lastZoneIndex && SLIDE_ZONES.length > 1);
+      }
+      lastZoneIndex = zoneIndex;
 
-      // Random vertical position between 6% and 62%
-      const topPct = Math.floor(Math.random() * 54) + 6;
-      // Random horizontal offset from the edge between 2% and 12%
-      const offsetPct = Math.floor(Math.random() * 10) + 2;
-      // Random tilt angle between -14deg and +14deg
-      const rot = (Math.random() * 26 - 13).toFixed(1);
+      let zone = SLIDE_ZONES[zoneIndex];
+
+      // Measure stage and text boundaries to guarantee NO overlay
+      const stageRect = capabilityStage.getBoundingClientRect();
+      const listRect = chooseList ? chooseList.getBoundingClientRect() : null;
+      const previewWidth = capabilityPreview.offsetWidth || 220;
+
+      const textLeft = listRect ? (listRect.left - stageRect.left) : 0;
+      const textRight = listRect ? (listRect.right - stageRect.left) : stageRect.width;
+      const stageWidth = stageRect.width;
+
+      const sideSpaceLeft = textLeft - 30;
+      const sideSpaceRight = stageWidth - textRight - 30;
+      const hasFlankSpace = sideSpaceLeft >= previewWidth || sideSpaceRight >= previewWidth;
+
+      // If screen is too narrow for side flanks, place neatly below the text list
+      if (!hasFlankSpace && listRect) {
+        capabilityPreview.style.top = `${listRect.height + 20}px`;
+        capabilityPreview.style.left = '50%';
+        capabilityPreview.style.right = 'auto';
+        capabilityPreview.style.transform = 'translateX(-50%)';
+        capabilityPreview.classList.remove('is-popping');
+        void capabilityPreview.offsetWidth;
+        capabilityPreview.classList.add('is-popping');
+        capabilityPreview.classList.add('is-visible');
+        return;
+      }
+
+      // If selected side doesn't have enough room, switch to the other side
+      let activeSide = zone.side;
+      if (activeSide === 'left' && sideSpaceLeft < previewWidth) {
+        activeSide = 'right';
+      } else if (activeSide === 'right' && sideSpaceRight < previewWidth) {
+        activeSide = 'left';
+      }
+
+      // Jitter rotation within +/- 3.5 deg
+      const rotJitter = (Math.random() * 7 - 3.5).toFixed(1);
+      const rot = (zone.rot + parseFloat(rotJitter)).toFixed(1);
+
+      // Jitter vertical position within +/- 4%
+      const vJitter = Math.floor(Math.random() * 8) - 4;
+      const topPct = Math.min(62, Math.max(6, zone.topPct + vJitter));
+
+      // Calculate horizontal position strictly ensuring at least 45px clearance from text!
+      if (listRect && stageWidth > 0) {
+        if (activeSide === 'left') {
+          // Left zone: right edge must be at least 45px to the left of textLeft
+          const maxAllowedLeft = Math.max(16, textLeft - previewWidth - 45);
+          const minAllowedLeft = 20;
+          const leftRange = Math.max(10, maxAllowedLeft - minAllowedLeft);
+          const leftPos = minAllowedLeft + Math.floor(Math.random() * leftRange);
+          capabilityPreview.style.left = `${Math.min(leftPos, maxAllowedLeft)}px`;
+          capabilityPreview.style.right = 'auto';
+        } else {
+          // Right zone: left edge must be at least 45px to the right of textRight
+          const stageRightDist = stageWidth - textRight;
+          const maxAllowedRight = Math.max(16, stageRightDist - previewWidth - 45);
+          const minAllowedRight = 20;
+          const rightRange = Math.max(10, maxAllowedRight - minAllowedRight);
+          const rightPos = minAllowedRight + Math.floor(Math.random() * rightRange);
+          capabilityPreview.style.right = `${Math.min(rightPos, maxAllowedRight)}px`;
+          capabilityPreview.style.left = 'auto';
+        }
+      } else {
+        // Fallback percentages if rects not available
+        const offsetPct = Math.floor(Math.random() * 6) + 3;
+        if (activeSide === 'left') {
+          capabilityPreview.style.left = `${offsetPct}%`;
+          capabilityPreview.style.right = 'auto';
+        } else {
+          capabilityPreview.style.right = `${offsetPct}%`;
+          capabilityPreview.style.left = 'auto';
+        }
+      }
 
       capabilityPreview.style.top = `${topPct}%`;
       capabilityPreview.style.bottom = 'auto';
-      if (side === 'left') {
-        capabilityPreview.style.left = `${offsetPct}%`;
-        capabilityPreview.style.right = 'auto';
-      } else {
-        capabilityPreview.style.right = `${offsetPct}%`;
-        capabilityPreview.style.left = 'auto';
-      }
       capabilityPreview.style.setProperty('--photo-rot', `${rot}deg`);
       capabilityPreview.style.transform = `rotate(${rot}deg)`;
 
@@ -64,30 +153,63 @@
       capabilityPreview.classList.remove('is-popping');
       void capabilityPreview.offsetWidth; // force DOM reflow
       capabilityPreview.classList.add('is-popping');
+      capabilityPreview.classList.add('is-visible');
     };
 
-    const activateCapability = (item) => {
+    const updatePreviewContent = (item) => {
+      const image = item.dataset.image;
+      if (capabilityLabel) capabilityLabel.textContent = item.dataset.label || item.textContent.trim();
+      if (capabilityImage) capabilityImage.src = image;
+      if (capabilityBackImage) capabilityBackImage.src = image;
+    };
+
+    const activateCapability = (item, index) => {
       capabilityItems.forEach((candidate) => {
         const active = candidate === item;
         candidate.classList.toggle('is-active', active);
         candidate.setAttribute('aria-pressed', String(active));
       });
-
-      const image = item.dataset.image;
-      if (capabilityLabel) capabilityLabel.textContent = item.dataset.label || item.textContent.trim();
-      if (capabilityImage) capabilityImage.src = image;
-      if (capabilityBackImage) capabilityBackImage.src = image;
-
-      // Pop the clip from a random position across the slide
-      placePreviewRandomly();
+      updatePreviewContent(item);
+      placePreviewRandomly(index);
     };
 
-    capabilityItems.forEach((item) => {
-      item.addEventListener('click', () => activateCapability(item));
+    // HOVER: instantly activate capability, change text font & pop polaroid WITHOUT needing to click!
+    capabilityItems.forEach((item, index) => {
+      item.addEventListener('mouseenter', () => {
+        clearTimeout(hideTimeout);
+        activateCapability(item, index);
+      });
+
+      item.addEventListener('pointerenter', () => {
+        clearTimeout(hideTimeout);
+        activateCapability(item, index);
+      });
+
+      // CLICK: also activates (great for mobile/touch or keyboards)
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        activateCapability(item, index);
+      });
     });
 
-    // Place initial preview position
-    placePreviewRandomly();
+    // Hide preview after cursor leaves the entire stage area
+    if (capabilityStage) {
+      capabilityStage.addEventListener('mouseleave', () => {
+        hideTimeout = setTimeout(() => {
+          if (capabilityPreview) {
+            capabilityPreview.classList.remove('is-visible', 'is-popping');
+          }
+        }, 400);
+      });
+    }
+
+    // Show initial preview for the first active item
+    const firstActive = capabilityStage.querySelector('.choose-item.is-active') || capabilityItems[0];
+    if (firstActive) {
+      const idx = capabilityItems.indexOf(firstActive);
+      updatePreviewContent(firstActive);
+      placePreviewRandomly(idx >= 0 ? idx : 0);
+    }
   }
 
   const closeMenu = () => {
