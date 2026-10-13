@@ -658,4 +658,42 @@
       }
     });
   });
+
+  // Hero interactive badges with responsive touch (LLM, SHIP IT, IDEA -> LIVE)
+  const heroBadges = document.querySelectorAll('[data-badge-pop]');
+  heroBadges.forEach((badge) => {
+    badge.addEventListener('click', () => {
+      badge.classList.remove('is-popped');
+      void badge.offsetWidth;
+      badge.classList.add('is-popped');
+
+      // For SHIP IT badge: celebratory toggle
+      const shipText = badge.querySelector('.orbit-badge-text');
+      const shipIcon = badge.querySelector('.orbit-badge-icon');
+      if (shipText && !badge._isShipped) {
+        badge._isShipped = true;
+        const prevText = shipText.textContent;
+        shipText.textContent = 'SHIPPED!';
+        if (shipIcon) shipIcon.textContent = '⚡';
+        badge.style.background = '#69f0ae';
+        badge.style.boxShadow = '6px 9px 0 var(--ink), 0 0 30px rgba(105, 240, 174, 0.7)';
+        setTimeout(() => {
+          shipText.textContent = prevText;
+          if (shipIcon) shipIcon.textContent = '🚀';
+          badge.style.background = '';
+          badge.style.boxShadow = '';
+          badge._isShipped = false;
+        }, 1800);
+      }
+
+      // Spawn colorful floating reaction particles
+      const rect = badge.getBoundingClientRect();
+      const spark = document.createElement('span');
+      spark.className = 'badge-click-spark';
+      spark.textContent = badge.classList.contains('orbit-one') ? '⚡' : badge.classList.contains('orbit-two') ? '🚀' : '✨';
+      spark.style.cssText = `position: fixed; left: ${rect.left + rect.width / 2}px; top: ${rect.top}px; pointer-events: none; z-index: 9999; font-size: 26px; animation: sparkFloat 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.25));`;
+      document.body.appendChild(spark);
+      setTimeout(() => spark.remove(), 800);
+    });
+  });
 })();
