@@ -1259,6 +1259,8 @@ h1, h2, h3, p { margin-top: 0; }
   letter-spacing: -.045em;
   line-height: .93;
   scale: var(--item-scale, 1);
+  translate: var(--scroll-x, 0px) 0;
+  will-change: translate;
   transition: color .22s ease, font-size .25s var(--ease-spring), letter-spacing .22s, scale .26s var(--ease-spring), text-shadow .22s, transform .26s var(--ease-spring), filter .22s;
 }
 .choose-item:nth-child(1) { --item-scale: .98; }

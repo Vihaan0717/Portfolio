@@ -458,6 +458,64 @@ window.SoundFX = (() => {
       updatePreviewContent(firstActive);
       placePreviewRandomly(idx >= 0 ? idx : 0);
     }
+
+    // ============================================================
+    // SCROLL-DRIVEN PARALLAX FOR CHOOSE ITEMS (Tamada Media Pattern)
+    // Alternating horizontal shift: Even rows move right-to-left,
+    // Odd rows move left-to-right based on scroll progress.
+    // Automatically reverses when scrolling UP!
+    // ============================================================
+    const chooseSection = document.getElementById('choose-build');
+    if (chooseSection && capabilityItems.length) {
+      let isParallaxTicking = false;
+
+      const updateChooseScrollParallax = () => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const rect = chooseSection.getBoundingClientRect();
+        const vh = window.innerHeight;
+
+        // Skip calculations if well outside viewport
+        if (rect.bottom < -120 || rect.top > vh + 120) return;
+
+        // Progress from 0 (section top hits viewport bottom) to 1 (section bottom exits viewport top)
+        const totalTravel = vh + rect.height;
+        const currentTravel = vh - rect.top;
+        const progress = Math.max(0, Math.min(1, currentTravel / totalTravel));
+
+        // factor ranges from -1 (entering bottom) to 0 (centered) to +1 (exiting top)
+        const factor = (progress - 0.5) * 2;
+
+        const isMobile = window.innerWidth <= 768;
+        // Max horizontal displacement (2.6vw on desktop, 1.4vw on mobile) matching Tamada's 2.4vw
+        const maxDisplacementVw = isMobile ? 1.4 : 2.6;
+
+        capabilityItems.forEach((item, index) => {
+          // Alternating directions matching Tamada:
+          // Even rows (0, 2, 4, 6): start shifted right (+max) -> glide left (-max) as you scroll down
+          // Odd rows (1, 3, 5, 7): start shifted left (-max) -> glide right (+max) as you scroll down
+          // Scrolling UP runs in exact reverse, sliding adjacent rows smoothly past each other!
+          const direction = (index % 2 === 0) ? -1 : 1;
+          const offsetVw = (direction * factor * maxDisplacementVw).toFixed(2);
+          item.style.setProperty('--scroll-x', `${offsetVw}vw`);
+        });
+      };
+
+      const onChooseScroll = () => {
+        if (!isParallaxTicking) {
+          isParallaxTicking = true;
+          requestAnimationFrame(() => {
+            updateChooseScrollParallax();
+            isParallaxTicking = false;
+          });
+        }
+      };
+
+      window.addEventListener('scroll', onChooseScroll, { passive: true });
+      window.addEventListener('resize', onChooseScroll, { passive: true });
+      // Run once immediately on load
+      updateChooseScrollParallax();
+    }
   }
 
   const closeMenu = () => {
