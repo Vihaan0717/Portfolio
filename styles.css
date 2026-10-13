@@ -118,7 +118,19 @@ img { max-width: 100%; }
 .pulse { display: block; width: 8px; height: 8px; border-radius: 50%; background: white; box-shadow: 0 0 0 0 rgba(255,255,255,.6); animation: pulse 2s infinite; }
 h1, h2, h3, p { margin-top: 0; }
 .hero h1 { max-width: 740px; margin-bottom: 19px; font-family: var(--display); font-size: clamp(62px, 7vw, 116px); font-weight: 900; letter-spacing: -.035em; line-height: .81; }
-.hero h1 span { display: inline-block; padding: 0 .08em .03em; color: var(--plum); font-family: var(--hand); font-size: .8em; font-weight: 700; letter-spacing: -.08em; line-height: .6; transform: rotate(-5deg) translateY(-.02em); }
+.hero h1 span {
+  display: inline-block;
+  padding: 0.15em 0.12em 0.06em;
+  color: var(--plum);
+  font-family: var(--hand);
+  font-size: .88em;
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: 1.05;
+  vertical-align: baseline;
+  transform: rotate(-4deg) translateY(-0.08em);
+  overflow: visible;
+}
 .hero-summary { max-width: 490px; margin-bottom: 31px; font-size: clamp(17px, 1.4vw, 20px); font-weight: 600; line-height: 1.38; }
 .hero-actions { display: flex; align-items: center; gap: 24px; }
 .scribble-link { display: inline-flex; align-items: center; gap: 6px; padding: 5px 0 8px; font-family: var(--hand); font-size: 25px; font-weight: 600; letter-spacing: -.025em; line-height: 1; transition: transform .25s var(--ease-spring); }
