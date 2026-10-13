@@ -1,3 +1,224 @@
+// ============================================================
+// HAPTIC & WEB AUDIO SFX ENGINE (Zero External Assets, 100% Theme-Matched)
+// ============================================================
+window.SoundFX = (() => {
+  let ctx = null;
+  let enabled = localStorage.getItem('portfolio_sfx') !== 'false';
+  let masterGain = null;
+
+  const init = () => {
+    if (!ctx) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) {
+        ctx = new AudioContextClass();
+        masterGain = ctx.createGain();
+        masterGain.gain.setValueAtTime(0.14, ctx.currentTime);
+        masterGain.connect(ctx.destination);
+      }
+    }
+    if (ctx && ctx.state === 'suspended') {
+      ctx.resume();
+    }
+  };
+
+  const isEnabled = () => enabled;
+
+  const setEnabled = (val) => {
+    enabled = Boolean(val);
+    localStorage.setItem('portfolio_sfx', enabled ? 'true' : 'false');
+    updateToggles();
+  };
+
+  const toggle = () => {
+    init();
+    setEnabled(!enabled);
+    if (enabled) {
+      playPop();
+      triggerHaptic(18);
+    }
+    return enabled;
+  };
+
+  const triggerHaptic = (pattern) => {
+    if (!enabled) return;
+    if ('vibrate' in navigator) {
+      try {
+        navigator.vibrate(pattern);
+      } catch (e) {}
+    }
+  };
+
+  // 1. Crisp tactile button/link tap
+  const playTap = () => {
+    if (!enabled) return;
+    init();
+    if (!ctx) return;
+    try {
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(480, now);
+      osc.frequency.exponentialRampToValueAtTime(160, now + 0.038);
+
+      gain.gain.setValueAtTime(0.22, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.038);
+
+      osc.connect(gain);
+      gain.connect(masterGain);
+      osc.start(now);
+      osc.stop(now + 0.04);
+    } catch (e) {}
+  };
+
+  // 2. Playful bubbly pop for badges, stickers, and cards
+  const playPop = () => {
+    if (!enabled) return;
+    init();
+    if (!ctx) return;
+    try {
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(420, now);
+      osc.frequency.exponentialRampToValueAtTime(860, now + 0.05);
+
+      gain.gain.setValueAtTime(0.28, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+
+      osc.connect(gain);
+      gain.connect(masterGain);
+      osc.start(now);
+      osc.stop(now + 0.065);
+    } catch (e) {}
+  };
+
+  // 3. Delicate harmonic shimmer chime for colored texts & sparks
+  let lastSparkTime = 0;
+  const playSpark = () => {
+    if (!enabled) return;
+    init();
+    if (!ctx) return;
+    const nowMs = performance.now();
+    if (nowMs - lastSparkTime < 80) return;
+    lastSparkTime = nowMs;
+
+    try {
+      const now = ctx.currentTime;
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      const base = 1100 + Math.random() * 500;
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(base, now);
+
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(base * 1.5, now);
+
+      gain.gain.setValueAtTime(0.14, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.075);
+
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(masterGain);
+
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + 0.08);
+      osc2.stop(now + 0.08);
+    } catch (e) {}
+  };
+
+  // 4. Clean UI tab chirp for switcher & controls
+  const playTab = () => {
+    if (!enabled) return;
+    init();
+    if (!ctx) return;
+    try {
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(560, now);
+      osc.frequency.setValueAtTime(740, now + 0.024);
+
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+
+      osc.connect(gain);
+      gain.connect(masterGain);
+      osc.start(now);
+      osc.stop(now + 0.055);
+    } catch (e) {}
+  };
+
+  // 5. Joyful fanfare chime for game win / correct answers
+  const playSuccess = () => {
+    if (!enabled) return;
+    init();
+    if (!ctx) return;
+    try {
+      const notes = [523.25, 659.25, 783.99, 1046.5];
+      notes.forEach((freq, idx) => {
+        const noteStart = ctx.currentTime + idx * 0.045;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, noteStart);
+
+        gain.gain.setValueAtTime(0.2, noteStart);
+        gain.gain.exponentialRampToValueAtTime(0.001, noteStart + 0.12);
+
+        osc.connect(gain);
+        gain.connect(masterGain);
+        osc.start(noteStart);
+        osc.stop(noteStart + 0.13);
+      });
+    } catch (e) {}
+  };
+
+  const updateToggles = () => {
+    document.querySelectorAll('[data-sound-toggle]').forEach((btn) => {
+      btn.classList.toggle('is-muted', !enabled);
+      btn.setAttribute('aria-pressed', String(enabled));
+      btn.title = enabled ? 'Sound & Haptics: ON (click to mute)' : 'Sound & Haptics: MUTED (click to enable)';
+    });
+    document.querySelectorAll('[data-sound-toggle-mini]').forEach((btn) => {
+      btn.textContent = enabled ? 'SFX ON' : 'SFX OFF';
+      btn.classList.toggle('is-muted', !enabled);
+    });
+  };
+
+  // Unlock on first user touch/click/key
+  const unlock = () => {
+    init();
+    window.removeEventListener('pointerdown', unlock);
+    window.removeEventListener('keydown', unlock);
+  };
+  window.addEventListener('pointerdown', unlock, { passive: true });
+  window.addEventListener('keydown', unlock, { passive: true });
+
+  return {
+    init,
+    isEnabled,
+    setEnabled,
+    toggle,
+    triggerHaptic,
+    playTap,
+    playPop,
+    playSpark,
+    playTab,
+    playSuccess,
+    updateToggles,
+  };
+})();
+
 (() => {
   const header = document.querySelector('[data-header]');
   const menuToggle = document.querySelector('[data-menu-toggle]');
@@ -14,6 +235,33 @@
   const year = document.querySelector('[data-year]');
   const capabilityStage = document.querySelector('[data-capability-stage]');
   let lastScroll = window.scrollY;
+
+  // Initialize SoundFX toggle buttons
+  SoundFX.updateToggles();
+  document.querySelectorAll('[data-sound-toggle], [data-sound-toggle-mini]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      SoundFX.toggle();
+    });
+  });
+
+  // Global tactile feedback for user clicks
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('button, a, summary, [data-badge-pop], .round-control, .choose-item, .gz-tab, .mini-product');
+    if (!el) return;
+    if (el.matches('[data-sound-toggle], [data-sound-toggle-mini]')) return;
+
+    if (el.matches('[data-badge-pop], .orbit, .hero-sticker')) {
+      SoundFX.playPop();
+      SoundFX.triggerHaptic(20);
+    } else if (el.matches('.choose-item, .gz-tab, .round-control, [data-capability], .journey-tab')) {
+      SoundFX.playTab();
+      SoundFX.triggerHaptic(12);
+    } else {
+      SoundFX.playTap();
+      SoundFX.triggerHaptic(8);
+    }
+  });
 
   if (year) year.textContent = new Date().getFullYear();
 
@@ -349,6 +597,8 @@
       if (now - lastSparkTime > 110) {
         lastSparkTime = now;
         spawnSpark(e.clientX, e.clientY);
+        window.SoundFX?.playSpark();
+        window.SoundFX?.triggerHaptic(6);
       }
     });
 
@@ -361,6 +611,8 @@
     });
 
     el.addEventListener('click', (e) => {
+      window.SoundFX?.playPop();
+      window.SoundFX?.triggerHaptic(20);
       for (let i = 0; i < 4; i++) {
         spawnSpark(e.clientX + (Math.random() - 0.5) * 24, e.clientY + (Math.random() - 0.5) * 24);
       }
@@ -511,8 +763,17 @@
     clearInterval(quizState.timer);
     const btns = qOptions.querySelectorAll('.gz-option-btn');
     btns.forEach(b => b.disabled = true);
-    if (chosen === correct) { btn.classList.add('correct'); quizState.score++; }
-    else { btn.classList.add('wrong'); btns[correct].classList.add('correct'); }
+    if (chosen === correct) {
+      btn.classList.add('correct');
+      quizState.score++;
+      window.SoundFX?.playSuccess();
+      window.SoundFX?.triggerHaptic([15, 30, 25]);
+    } else {
+      btn.classList.add('wrong');
+      btns[correct].classList.add('correct');
+      window.SoundFX?.playTap();
+      window.SoundFX?.triggerHaptic(20);
+    }
     qScoreDisplay.textContent = quizState.score + ' / ' + QUIZ_TOTAL;
     qProgressBar.style.width = ((quizState.idx + 1) / QUIZ_TOTAL * 100) + '%';
     setTimeout(nextQuestion, 1200);
@@ -527,6 +788,10 @@
     const passed = quizState.score >= 4;
     qEndEmoji.textContent  = passed ? '🏆' : quizState.score >= 2 ? '👍' : '😅';
     qEndTitle.textContent  = passed ? 'You crushed it!' : quizState.score >= 2 ? 'Not bad!' : 'Keep learning!';
+    if (passed) {
+      window.SoundFX?.playSuccess();
+      window.SoundFX?.triggerHaptic([20, 35, 30, 45]);
+    }
     if (!qResult.hidden) { qResult.className = 'gz-pass-chip ' + (passed ? 'passed' : 'failed'); qResult.textContent = passed ? '✓ PASSED' : '✗ RETRY'; }
   }
 
@@ -587,6 +852,8 @@
     spFinalScore.textContent = speedState.score;
     const title = document.getElementById('speed-end-title');
     if (title) title.textContent = speedState.score >= 15 ? 'Lightning fingers! ⚡' : speedState.score >= 8 ? 'Solid speed! 💪' : "Practice makes perfect!";
+    window.SoundFX?.playSuccess();
+    window.SoundFX?.triggerHaptic([20, 35, 30, 45]);
   }
 
   if (spInput) {
@@ -599,6 +866,8 @@
         spStreak.textContent = speedState.streak;
         spInput.classList.add('gz-correct');
         if (spFeedback) spFeedback.textContent = '+' + (1 + Math.floor((speedState.streak - 1) / 3)) + ' ' + (speedState.streak > 2 ? '🔥' : '✓');
+        window.SoundFX?.playPop();
+        window.SoundFX?.triggerHaptic(14);
         setTimeout(pickSpeedWord, 220);
       } else if (speedState.currentWord.startsWith(typed)) {
         spInput.classList.remove('gz-wrong', 'gz-correct');
@@ -660,6 +929,8 @@
   function flipCard(el) {
     if (matchState.locked || el.classList.contains('is-flipped') || el.classList.contains('is-matched')) return;
     el.classList.add('is-flipped');
+    window.SoundFX?.playTap();
+    window.SoundFX?.triggerHaptic(8);
     matchState.flipped.push(el);
     matchState.flips++;
     if (matchFlips) matchFlips.textContent = matchState.flips + ' flips';
@@ -671,6 +942,8 @@
     if (a.dataset.cardId === b.dataset.cardId) {
       a.classList.add('is-matched'); b.classList.add('is-matched');
       matchState.matched++;
+      window.SoundFX?.playSuccess();
+      window.SoundFX?.triggerHaptic([15, 35, 25]);
       if (matchPairsDisp) matchPairsDisp.textContent = matchState.matched + ' / 8 pairs';
       matchState.flipped = [];
       matchState.locked  = false;
