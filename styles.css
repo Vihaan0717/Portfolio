@@ -80,14 +80,164 @@ img { max-width: 100%; }
 .site-header::before { position: absolute; z-index: -1; inset: 0; content: ""; background: linear-gradient(to bottom, rgba(248,242,232,.95), rgba(248,242,232,.78) 72%, transparent); opacity: 0; transition: opacity .3s; pointer-events: none; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
 .site-header.header-scrolled { padding-top: 11px; padding-bottom: 11px; }
 .site-header.header-scrolled::before { opacity: 1; }
-.brand { display: inline-flex; align-items: center; gap: 10px; min-width: 141px; font-family: var(--display); font-size: 30px; font-weight: 900; letter-spacing: -.035em; line-height: .72; }
-.brand > span:last-child { display: grid; gap: 2px; }
-.brand b { display: block; }
-.brand em { display: block; padding-left: 2px; color: var(--plum); font-family: var(--sans); font-size: 8px; font-style: normal; font-weight: 800; letter-spacing: .52em; line-height: 1; }
-.brand-mark { position: relative; display: block; width: 32px; height: 31px; border: 3px solid var(--ink); border-radius: 9px 14px 9px 14px; background: var(--coral); transform: rotate(-9deg); box-shadow: 4px 4px 0 var(--ink); }
-.brand-mark::after { position: absolute; right: -5px; bottom: -7px; width: 9px; height: 9px; border: 2px solid var(--ink); border-radius: 50%; content: ""; background: var(--lime); }
-.brand-mark i { position: absolute; display: block; width: 4px; height: 4px; border-radius: 50%; background: var(--ink); }
-.brand-mark i:nth-child(1) { top: 8px; left: 7px; }.brand-mark i:nth-child(2) { top: 8px; right: 7px; }.brand-mark i:nth-child(3) { bottom: 6px; left: 12px; width: 8px; height: 3px; border-radius: 50%; }
+.brand { display: inline-flex; align-items: center; gap: 11px; min-width: 141px; font-family: var(--display); font-size: 30px; font-weight: 900; letter-spacing: -.035em; line-height: .72; }
+.brand > span:last-child { display: grid; gap: 3px; }
+.brand b { display: block; letter-spacing: -.02em; }
+.brand em { display: block; padding-left: 2px; color: var(--plum); font-family: var(--sans); font-size: 8px; font-style: normal; font-weight: 800; letter-spacing: .58em; line-height: 1; }
+
+/* === ALIVE & ANIMATED MASCOT LOGO MARK === */
+.brand-mark {
+  position: relative;
+  display: block;
+  width: 34px;
+  height: 33px;
+  border: 3px solid var(--ink);
+  border-radius: 11px 16px 11px 15px;
+  background: var(--coral);
+  box-shadow: 4px 4px 0 var(--ink);
+  transform: rotate(-8deg);
+  transform-origin: center bottom;
+  animation: brandAliveIdle 3.8s ease-in-out infinite;
+  transition: transform .28s var(--ease-spring), box-shadow .28s ease, filter .22s;
+  will-change: transform;
+}
+
+@keyframes brandAliveIdle {
+  0%, 100% {
+    transform: rotate(-8deg) scale(1, 1);
+    border-radius: 11px 16px 11px 15px;
+  }
+  30% {
+    transform: rotate(-5deg) scale(1.04, 0.97) translateY(-1px);
+    border-radius: 13px 14px 13px 13px;
+  }
+  70% {
+    transform: rotate(-10deg) scale(0.97, 1.03) translateY(1px);
+    border-radius: 10px 17px 10px 16px;
+  }
+}
+
+/* Expressive Character Eyes with natural blinking */
+.brand-eye {
+  position: absolute;
+  top: 9px;
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink);
+  animation: brandBlink 4s infinite;
+  transform-origin: center center;
+}
+.brand-eye::after {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 1.5px;
+  height: 1.5px;
+  border-radius: 50%;
+  content: "";
+  background: #ffffff;
+}
+.brand-eye.eye-left { left: 8px; }
+.brand-eye.eye-right { right: 8px; }
+
+@keyframes brandBlink {
+  0%, 88%, 94%, 100% {
+    transform: scaleY(1);
+  }
+  91% {
+    transform: scaleY(0.12);
+  }
+}
+
+/* Expressive Smile Mouth */
+.brand-mouth {
+  position: absolute;
+  bottom: 7px;
+  left: 50%;
+  width: 8px;
+  height: 4px;
+  border-bottom: 2.5px solid var(--ink);
+  border-radius: 0 0 8px 8px;
+  transform: translateX(-50%);
+  transition: all .24s var(--ease-spring);
+}
+
+/* Pulsing electric lime cheek orb */
+.brand-cheek {
+  position: absolute;
+  right: -5px;
+  bottom: -6px;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--lime);
+  animation: brandCheekPulse 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes brandCheekPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(213, 255, 69, 0);
+  }
+  100% {
+    transform: scale(1.22);
+    box-shadow: 0 0 10px rgba(213, 255, 69, 0.9);
+  }
+}
+
+/* Pop sparkle */
+.brand-sparkle {
+  position: absolute;
+  top: -11px;
+  right: -8px;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--sun);
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.3) rotate(-20deg);
+  transition: opacity .25s ease, transform .35s var(--ease-spring);
+  text-shadow: 0 0 8px rgba(255, 207, 63, 0.85);
+}
+
+/* On hover / focus: Mascot gets cheerful, winks, smiles and springs up */
+.brand:hover .brand-mark,
+.brand:focus-visible .brand-mark {
+  transform: rotate(7deg) scale(1.15) translateY(-2px);
+  box-shadow: 5px 6px 0 var(--ink), 0 10px 24px rgba(255, 78, 40, 0.45);
+  animation-play-state: paused;
+}
+
+.brand:hover .brand-mouth,
+.brand:focus-visible .brand-mouth {
+  width: 10px;
+  height: 6px;
+  background: var(--ink);
+  border-radius: 1px 1px 10px 10px;
+  border-bottom: none;
+}
+
+.brand:hover .brand-eye.eye-left {
+  transform: scale(1.15);
+}
+
+.brand:hover .brand-eye.eye-right {
+  transform: scaleY(0.2) scaleX(1.1);
+}
+
+.brand:hover .brand-sparkle,
+.brand:focus-visible .brand-sparkle {
+  opacity: 1;
+  transform: scale(1.2) rotate(20deg);
+}
+
+.brand:active .brand-mark {
+  transform: rotate(-4deg) scale(0.94) translateY(2px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
 
 .desktop-nav { display: flex; align-items: center; gap: clamp(14px, 1.8vw, 30px); padding: 12px clamp(16px, 1.8vw, 24px); border-radius: 999px; background: rgba(255,255,255,.94); box-shadow: 0 8px 23px -18px rgba(25,22,30,.7); white-space: nowrap; flex-wrap: nowrap; }
 .desktop-nav a { position: relative; font-size: clamp(12.5px, 0.95vw, 14px); font-weight: 700; white-space: nowrap; transition: color .2s; }

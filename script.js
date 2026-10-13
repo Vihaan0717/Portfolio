@@ -251,7 +251,7 @@ window.SoundFX = (() => {
     if (!el) return;
     if (el.matches('[data-sound-toggle], [data-sound-toggle-mini]')) return;
 
-    if (el.matches('[data-badge-pop], .orbit, .hero-sticker')) {
+    if (el.matches('[data-badge-pop], .orbit, .hero-sticker, .brand, .brand-mark')) {
       SoundFX.playPop();
       SoundFX.triggerHaptic(20);
     } else if (el.matches('.choose-item, .gz-tab, .round-control, [data-capability], .journey-tab')) {
