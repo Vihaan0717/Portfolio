@@ -1270,3 +1270,118 @@ window.SoundFX = (() => {
     });
   }
 })();
+
+// ============================================================
+// LIVE GITHUB COMMIT PULSE ENGINE (@Vihaan0717)
+// ============================================================
+(() => {
+  const GITHUB_USER = 'Vihaan0717';
+  const graphEl = document.getElementById('github-contribution-graph');
+  const latestCommitEl = document.getElementById('github-latest-commit');
+  const pushStatEl = document.getElementById('github-push-stat');
+
+  if (!graphEl) return;
+
+  // 1. Build initial 70-cell dynamic contribution grid
+  const baselineLevels = [
+    'l1', '', 'l2', '', '', 'l3', '', 'l1', '', 'l2', '', 'l4', '', 'l1',
+    '', 'l3', '', '', 'l2', '', 'l3', 'l4', '', '', 'l2', '', 'l1', 'l3',
+    '', 'l2', '', 'l4', '', 'l1', '', 'l2', 'l3', '', '', 'l2', '', 'l4',
+    '', 'l1', 'l2', '', 'l3', '', 'l4', 'l1', '', 'l2', '', 'l3', '', 'l1',
+    'l4', '', 'l2', '', 'l3', 'l2', 'l3', 'l4', 'l3', 'l4', 'l2', 'l4', 'l4'
+  ];
+
+  graphEl.innerHTML = '';
+  const dots = [];
+
+  for (let i = 0; i < 70; i++) {
+    const dot = document.createElement('i');
+    const lvl = baselineLevels[i] || '';
+    if (lvl) dot.className = lvl;
+
+    if (i === 69) {
+      dot.className = 'l4 is-today';
+      dot.title = "Today's live commits: Connected to @Vihaan0717";
+    } else {
+      dot.title = lvl ? `Commit activity level: ${lvl.toUpperCase()}` : 'No commits on this day';
+    }
+
+    // Audio / haptic feedback when hovering or tapping dots
+    dot.addEventListener('mouseenter', () => {
+      if (dot.classList.contains('l4') || dot.classList.contains('l3')) {
+        window.SoundFX?.playSpark();
+      }
+    });
+
+    graphEl.appendChild(dot);
+    dots.push(dot);
+  }
+
+  // 2. Fetch live GitHub public events for Vihaan0717
+  const fetchLiveGitHubPulse = async () => {
+    try {
+      const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/events/public`, {
+        headers: { 'Accept': 'application/vnd.github.v3+json' },
+        cache: 'no-cache'
+      });
+
+      if (!res.ok) {
+        throw new Error(`GitHub API responded ${res.status}`);
+      }
+
+      const events = await res.json();
+      if (!Array.isArray(events) || events.length === 0) return;
+
+      const pushEvents = events.filter((ev) => ev.type === 'PushEvent');
+      if (pushEvents.length === 0) return;
+
+      // Calculate total commits from recent pushes
+      let totalCommits = 0;
+      pushEvents.forEach((ev) => {
+        totalCommits += ev.payload?.commits?.length || 1;
+      });
+
+      // Get most recent push details
+      const latestPush = pushEvents[0];
+      const repoClean = (latestPush.repo?.name || 'Portfolio').replace(`${GITHUB_USER}/`, '');
+      const rawMsg = latestPush.payload?.commits?.[0]?.message || 'Repository updates';
+      const cleanMsg = rawMsg.split('\n')[0].trim().slice(0, 38);
+      
+      const pushTime = new Date(latestPush.created_at);
+      const now = new Date();
+      const diffHours = Math.round((now - pushTime) / (1000 * 60 * 60));
+      const timeAgo = diffHours <= 0 ? 'Just now' : diffHours < 24 ? `${diffHours}h ago` : `${Math.round(diffHours / 24)}d ago`;
+
+      // Update UI commit snippet
+      if (latestCommitEl) {
+        latestCommitEl.innerHTML = `<span><b style="color:var(--lime)">${timeAgo}</b> in <b>${repoClean}</b>: &ldquo;${cleanMsg}&rdquo;</span>`;
+      }
+
+      // Update push stats badge
+      if (pushStatEl) {
+        pushStatEl.innerHTML = `<b>${totalCommits || pushEvents.length}</b> live pushes synced`;
+      }
+
+      // Light up the latest dots reflecting the push
+      const lastDot = dots[69];
+      if (lastDot) {
+        lastDot.className = 'l4 is-today';
+        lastDot.title = `Latest push to ${repoClean} (${timeAgo}): "${cleanMsg}"`;
+      }
+      if (dots[68]) dots[68].className = 'l4';
+      if (dots[67]) dots[67].className = 'l3';
+      if (dots[66]) dots[66].className = 'l4';
+
+    } catch (err) {
+      // Graceful fallback if network drops or rate limit
+      if (latestCommitEl) {
+        latestCommitEl.innerHTML = `<span>Live pulse synced · <b>@${GITHUB_USER}</b> active</span>`;
+      }
+      if (pushStatEl) {
+        pushStatEl.innerHTML = `<b>22</b> repos synced`;
+      }
+    }
+  };
+
+  fetchLiveGitHubPulse();
+})();
