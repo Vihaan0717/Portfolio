@@ -696,4 +696,103 @@
       setTimeout(() => spark.remove(), 800);
     });
   });
+
+  // === HERO 3-CARD STAGE: POP ENTRANCE ON RELOAD & ACTIVE 3D CURSOR INTERACTION ===
+  const heroStage = document.querySelector('.hero-stage');
+  if (heroStage) {
+    const cardCenter = heroStage.querySelector('.product-center');
+    const cardLeft = heroStage.querySelector('.product-left');
+    const cardRight = heroStage.querySelector('.product-right');
+
+    // On page load or reload: clean up is-popping class once entrance finishes so transforms are free
+    let popTimer = setTimeout(() => {
+      heroStage.classList.remove('is-popping');
+    }, 1100);
+
+    let isTracking = false;
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let rafId = null;
+
+    const renderCardTransforms = () => {
+      // Fluid linear interpolation (lerp) for buttery 60fps tracking
+      currentX += (targetX - currentX) * 0.16;
+      currentY += (targetY - currentY) * 0.16;
+
+      // 1. Center Phone: tracks cursor with elevation, subtle depth tilt, and float
+      if (cardCenter && !cardCenter.matches(':hover')) {
+        cardCenter.style.transform = `translateX(calc(-50% + ${currentX * 18}px)) translateY(${currentY * 16}px) rotate(${currentX * 4}deg) scale(1.01)`;
+      }
+
+      // 2. Left Card: fans dynamically to the left, shifts with parallax depth
+      if (cardLeft && !cardLeft.matches(':hover')) {
+        cardLeft.style.transform = `translateX(${currentX * 24 - 10}px) translateY(${currentY * 14 - 6}px) rotate(${-7 + currentX * 6}deg) scale(1.01)`;
+      }
+
+      // 3. Right Card: fans dynamically to the right, shifts with parallax depth
+      if (cardRight && !cardRight.matches(':hover')) {
+        cardRight.style.transform = `translateX(${currentX * 24 + 10}px) translateY(${currentY * 14 - 6}px) rotate(${7 + currentX * 6}deg) scale(1.01)`;
+      }
+
+      if (isTracking || Math.abs(targetX - currentX) > 0.002 || Math.abs(targetY - currentY) > 0.002) {
+        rafId = requestAnimationFrame(renderCardTransforms);
+      } else {
+        rafId = null;
+      }
+    };
+
+    // Tracking on pointer/mouse move across the stage
+    const handleStagePointerMove = (e) => {
+      clearTimeout(popTimer);
+      heroStage.classList.remove('is-popping');
+      heroStage.classList.add('is-tracking');
+
+      const rect = heroStage.getBoundingClientRect();
+      // Calculate normalized position (-1 to 1) from stage center
+      targetX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+      targetY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+      targetX = Math.max(-1.1, Math.min(1.1, targetX));
+      targetY = Math.max(-1.1, Math.min(1.1, targetY));
+
+      if (!isTracking) {
+        isTracking = true;
+        if (!rafId) rafId = requestAnimationFrame(renderCardTransforms);
+      }
+    };
+
+    heroStage.addEventListener('mousemove', handleStagePointerMove);
+    heroStage.addEventListener('pointermove', handleStagePointerMove);
+
+    // Mouse leave: smoothly return cards to perfect resting positions
+    const handleStagePointerLeave = () => {
+      isTracking = false;
+      targetX = 0;
+      targetY = 0;
+      heroStage.classList.remove('is-tracking');
+
+      setTimeout(() => {
+        if (!isTracking) {
+          if (cardCenter && !cardCenter.matches(':hover')) cardCenter.style.transform = '';
+          if (cardLeft && !cardLeft.matches(':hover')) cardLeft.style.transform = '';
+          if (cardRight && !cardRight.matches(':hover')) cardRight.style.transform = '';
+        }
+      }, 350);
+    };
+
+    heroStage.addEventListener('mouseleave', handleStagePointerLeave);
+    heroStage.addEventListener('pointerleave', handleStagePointerLeave);
+
+    // Replay entrance pop-out on page reload / navigation
+    window.addEventListener('pageshow', () => {
+      heroStage.classList.remove('is-popping');
+      void heroStage.offsetWidth;
+      heroStage.classList.add('is-popping');
+      clearTimeout(popTimer);
+      popTimer = setTimeout(() => {
+        heroStage.classList.remove('is-popping');
+      }, 1100);
+    });
+  }
 })();
