@@ -3,10 +3,26 @@
    Scoped Styles for Snake, Brick Breaker, Memory Match & RPS
    ============================================================ */
 
+/* Universal hidden priority for all arcade elements */
+[hidden],
+.arcade-zone [hidden],
+.arcade-card-grid[hidden],
+.arcade-play-shell[hidden],
+.arcade-game-arena[hidden],
+.arcade-canvas-wrap[hidden],
+.arcade-modal-backdrop[hidden],
+.arcade-record-sticker[hidden] {
+  display: none !important;
+}
+
 .arcade-zone {
   position: relative;
-  background: var(--cream);
-  padding: clamp(70px, 9vw, 120px) 0;
+  background: linear-gradient(135deg, #fefbf4 0%, #faedf8 35%, #ebf5fe 70%, #f3faea 100%);
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(86, 55, 242, 0.08) 1.5px, transparent 0),
+    linear-gradient(135deg, #fefbf4 0%, #faedf8 35%, #ebf5fe 70%, #f3faea 100%);
+  background-size: 26px 26px, 100% 100%;
+  padding: clamp(60px, 7.5vw, 96px) 0;
   border-top: 2.5px solid var(--ink);
   border-bottom: 2.5px solid var(--ink);
   overflow: clip;
@@ -652,16 +668,20 @@
    VICTORY & GAME OVER CELEBRATION MODAL OVERLAY
    ============================================================ */
 .arcade-modal-backdrop {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background: rgba(25, 22, 30, 0.88);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 28px;
-  z-index: 10;
+  z-index: 99999;
   padding: 20px;
+}
+
+.arcade-modal-backdrop[hidden] {
+  display: none !important;
 }
 
 .arcade-modal-box {

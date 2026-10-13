@@ -122,9 +122,6 @@ window.BrickGame = (() => {
     const handlePointerDown = (e) => {
       isTouching = true;
       handlePointerMove(e);
-      if (!isServed) {
-        serveBall();
-      }
     };
 
     canvas.addEventListener('pointerdown', handlePointerDown);

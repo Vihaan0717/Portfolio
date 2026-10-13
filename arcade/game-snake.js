@@ -11,6 +11,7 @@ window.SnakeGame = (() => {
   let isRunning = false;
   let isPaused = false;
   let isGameOver = false;
+  let isAwaitingStart = true;
 
   // Grid setup: 20x20
   const GRID_SIZE = 20;
@@ -67,6 +68,7 @@ window.SnakeGame = (() => {
     tickInterval = 130;
     isPaused = false;
     isGameOver = false;
+    isAwaitingStart = true;
     isRunning = true;
     lastTick = performance.now();
 
@@ -91,6 +93,13 @@ window.SnakeGame = (() => {
 
   const setDirection = (x, y) => {
     if (!isRunning || isPaused || isGameOver) return;
+    if (isAwaitingStart) {
+      isAwaitingStart = false;
+      lastTick = performance.now();
+      dir = { x, y };
+      nextDir = { x, y };
+      return;
+    }
     // Prevent immediate 180-degree reversal
     if (x !== 0 && dir.x === -x) return;
     if (y !== 0 && dir.y === -y) return;
@@ -149,6 +158,7 @@ window.SnakeGame = (() => {
   };
 
   const step = () => {
+    if (isAwaitingStart) return;
     dir = nextDir;
     const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
 
@@ -299,6 +309,17 @@ window.SnakeGame = (() => {
         ctx.fill();
       }
     });
+
+    // Awaiting start prompt overlay
+    if (isAwaitingStart && !isPaused && !isGameOver) {
+      ctx.fillStyle = 'rgba(25, 22, 30, 0.75)';
+      ctx.fillRect(0, h / 2 - 28, w, 56);
+      ctx.font = 'bold 12px "DM Sans", sans-serif';
+      ctx.fillStyle = '#d5ff45';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('PRESS ARROW, WASD OR D-PAD TO START 🐍', w / 2, h / 2);
+    }
 
     // Pause overlay
     if (isPaused) {

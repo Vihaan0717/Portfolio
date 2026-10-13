@@ -35,6 +35,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
   refreshCardBests();
 
+  // Modal helpers
+  const modalEl = document.getElementById('arcade-modal');
+  const modalEmoji = document.getElementById('arcade-modal-emoji');
+  const modalTitle = document.getElementById('arcade-modal-title');
+  const modalDesc = document.getElementById('arcade-modal-desc');
+  const modalRecordPill = document.getElementById('arcade-modal-record');
+  const modalRetryBtn = document.getElementById('arcade-modal-retry');
+  const modalBackBtn = document.getElementById('arcade-modal-back');
+
+  const hideModal = () => {
+    if (modalEl) modalEl.hidden = true;
+  };
+
+  const showModal = ({ emoji, title, desc, isNewRecord, retryAction }) => {
+    if (!modalEl) return;
+    if (modalEmoji) modalEmoji.textContent = emoji;
+    if (modalTitle) modalTitle.textContent = title;
+    if (modalDesc) modalDesc.innerHTML = desc;
+    if (modalRecordPill) {
+      modalRecordPill.hidden = !isNewRecord;
+      if (isNewRecord) {
+        modalRecordPill.textContent = '★ NEW PERSONAL RECORD!';
+      }
+    }
+
+    modalRetryBtn.onclick = () => {
+      hideModal();
+      if (typeof retryAction === 'function') retryAction();
+    };
+
+    modalBackBtn.onclick = () => {
+      hideModal();
+      closeGame();
+    };
+
+    modalEl.hidden = false;
+  };
+
+  if (modalEl) {
+    modalEl.addEventListener('click', (e) => {
+      if (e.target === modalEl) {
+        hideModal();
+      }
+    });
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (modalEl && !modalEl.hidden) {
+        hideModal();
+      } else if (currentGame) {
+        closeGame();
+      }
+    }
+  });
+
   // Navigation: Show game shell
   const openGame = (gameKey) => {
     currentGame = gameKey;
@@ -99,44 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
       openGame(gameKey);
     });
   });
-
-  // Modal helpers
-  const modalEl = document.getElementById('arcade-modal');
-  const modalEmoji = document.getElementById('arcade-modal-emoji');
-  const modalTitle = document.getElementById('arcade-modal-title');
-  const modalDesc = document.getElementById('arcade-modal-desc');
-  const modalRecordPill = document.getElementById('arcade-modal-record');
-  const modalRetryBtn = document.getElementById('arcade-modal-retry');
-  const modalBackBtn = document.getElementById('arcade-modal-back');
-
-  const showModal = ({ emoji, title, desc, isNewRecord, retryAction }) => {
-    if (!modalEl) return;
-    if (modalEmoji) modalEmoji.textContent = emoji;
-    if (modalTitle) modalTitle.textContent = title;
-    if (modalDesc) modalDesc.innerHTML = desc;
-    if (modalRecordPill) {
-      modalRecordPill.hidden = !isNewRecord;
-      if (isNewRecord) {
-        modalRecordPill.textContent = '★ NEW PERSONAL RECORD!';
-      }
-    }
-
-    modalRetryBtn.onclick = () => {
-      hideModal();
-      retryAction();
-    };
-
-    modalBackBtn.onclick = () => {
-      hideModal();
-      closeGame();
-    };
-
-    modalEl.hidden = false;
-  };
-
-  const hideModal = () => {
-    if (modalEl) modalEl.hidden = true;
-  };
 
   // ----------------------------------------------------
   // GAME 1: SNAKE LAUNCHER
