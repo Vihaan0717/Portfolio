@@ -262,11 +262,22 @@
   labNext?.addEventListener('click', () => scrollLabRail(1));
 
   if ('IntersectionObserver' in window) {
+    const isHeading = (el) => el.matches('.section-heading, .split-heading, .gz-header, .choose-heading, .hero-copy, .approach-copy, .contact-inner') || el.closest('.faq-layout > div:first-child');
+
     const revealObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('revealed');
-        observer.unobserve(entry.target);
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          if (!isHeading(entry.target)) {
+            observer.unobserve(entry.target);
+          }
+        } else if (isHeading(entry.target)) {
+          // If scrolled away from this slide, reset so heading scrolls up again when returning
+          const rect = entry.boundingClientRect;
+          if (rect.top > window.innerHeight * 1.15 || rect.bottom < -120) {
+            entry.target.classList.remove('revealed');
+          }
+        }
       });
     }, { threshold: .12, rootMargin: '0px 0px -30px' });
 
@@ -277,6 +288,84 @@
   } else {
     revealItems.forEach((item) => item.classList.add('revealed'));
   }
+
+  // Smooth re-trigger of heading scroll-up entrance on navigation link clicks
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener('click', () => {
+      const href = anchor.getAttribute('href');
+      if (!href || href === '#' || href === '#top') return;
+      const target = document.querySelector(href);
+      if (target) {
+        const heading = target.querySelector('.section-heading, .split-heading, .gz-header, .choose-heading, .approach-copy, .faq-layout > div:first-child, .contact-inner, [data-reveal]');
+        if (heading) {
+          heading.classList.remove('revealed');
+          setTimeout(() => {
+            heading.classList.add('revealed');
+          }, 80);
+        }
+      }
+    });
+  });
+
+  // Dynamic cursor reactivity & micro-sparks for colored accent texts in headings
+  const accentTexts = document.querySelectorAll(
+    '.hero-copy h1 span, .section-heading h2 span, .approach h2 span, .process h2 span, .proof h2 span, .faq h2 span, .contact h2 span, .gz-header h2 em, .shimmer-text'
+  );
+
+  const sparkColors = ['#ff5722', '#c7f52c', '#ffd500', '#17d9df', '#fd48f2', '#681149'];
+  const sparkSymbols = ['✦', '★', '✳', '·', '✧'];
+  let lastSparkTime = 0;
+
+  const spawnSpark = (x, y) => {
+    const spark = document.createElement('span');
+    spark.className = 'text-spark';
+    spark.textContent = sparkSymbols[Math.floor(Math.random() * sparkSymbols.length)];
+    spark.style.left = `${x}px`;
+    spark.style.top = `${y}px`;
+    spark.style.color = sparkColors[Math.floor(Math.random() * sparkColors.length)];
+    spark.style.fontSize = `${Math.floor(Math.random() * 11 + 14)}px`;
+    spark.style.setProperty('--spark-vx', `${(Math.random() - 0.5) * 48}px`);
+    spark.style.setProperty('--spark-vy', `${-Math.random() * 38 - 18}px`);
+    spark.style.setProperty('--spark-rot', `${(Math.random() - 0.5) * 80}deg`);
+    document.body.appendChild(spark);
+    setTimeout(() => spark.remove(), 650);
+  };
+
+  accentTexts.forEach((el) => {
+    el.classList.add('heading-accent');
+
+    el.addEventListener('pointermove', (e) => {
+      const rect = el.getBoundingClientRect();
+      const normX = ((e.clientX - rect.left) / rect.width) - 0.5;
+      const normY = ((e.clientY - rect.top) / rect.height) - 0.5;
+
+      el.style.setProperty('--accent-tx', `${normX * 16}px`);
+      el.style.setProperty('--accent-ty', `${normY * 10}px`);
+      el.style.setProperty('--accent-rot', `${normX * 12}deg`);
+      el.style.setProperty('--accent-shadow-x', `${-normX * 14}px`);
+      el.style.setProperty('--accent-shadow-y', `${-normY * 10 + 8}px`);
+
+      const now = performance.now();
+      if (now - lastSparkTime > 110) {
+        lastSparkTime = now;
+        spawnSpark(e.clientX, e.clientY);
+      }
+    });
+
+    el.addEventListener('pointerleave', () => {
+      el.style.setProperty('--accent-tx', '0px');
+      el.style.setProperty('--accent-ty', '0px');
+      el.style.setProperty('--accent-rot', '0deg');
+      el.style.setProperty('--accent-shadow-x', '0px');
+      el.style.setProperty('--accent-shadow-y', '8px');
+    });
+
+    el.addEventListener('click', (e) => {
+      for (let i = 0; i < 4; i++) {
+        spawnSpark(e.clientX + (Math.random() - 0.5) * 24, e.clientY + (Math.random() - 0.5) * 24);
+      }
+    });
+  });
 
   if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
     cursorCards.forEach((card) => {
