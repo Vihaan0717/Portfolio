@@ -19,33 +19,75 @@
 
   if (capabilityStage) {
     const capabilityItems = [...capabilityStage.querySelectorAll('[data-capability]')];
+    const capabilityPreview = capabilityStage.querySelector('.choose-preview');
     const capabilityImage = capabilityStage.querySelector('[data-capability-image]');
     const capabilityBackImage = capabilityStage.querySelector('.choose-photo-back img');
     const capabilityLabel = capabilityStage.querySelector('[data-capability-label]');
+    let lastSide = 'right';
+
+    // Randomize polaroid clip position across the slide on each click
+    const placePreviewRandomly = () => {
+      if (!capabilityPreview) return;
+      const isMobile = window.innerWidth <= 760;
+      if (isMobile) {
+        capabilityPreview.style.left = '50%';
+        capabilityPreview.style.right = 'auto';
+        capabilityPreview.style.top = 'auto';
+        capabilityPreview.style.transform = 'translateX(-50%)';
+        return;
+      }
+
+      // Alternate between left and right flanks of the text list for dynamic distribution
+      const side = lastSide === 'left' ? 'right' : 'left';
+      lastSide = side;
+
+      // Random vertical position between 6% and 62%
+      const topPct = Math.floor(Math.random() * 54) + 6;
+      // Random horizontal offset from the edge between 2% and 12%
+      const offsetPct = Math.floor(Math.random() * 10) + 2;
+      // Random tilt angle between -14deg and +14deg
+      const rot = (Math.random() * 26 - 13).toFixed(1);
+
+      capabilityPreview.style.top = `${topPct}%`;
+      capabilityPreview.style.bottom = 'auto';
+      if (side === 'left') {
+        capabilityPreview.style.left = `${offsetPct}%`;
+        capabilityPreview.style.right = 'auto';
+      } else {
+        capabilityPreview.style.right = `${offsetPct}%`;
+        capabilityPreview.style.left = 'auto';
+      }
+      capabilityPreview.style.setProperty('--photo-rot', `${rot}deg`);
+      capabilityPreview.style.transform = `rotate(${rot}deg)`;
+
+      // Trigger bouncy pop-up spring animation on the clip
+      capabilityPreview.classList.remove('is-popping');
+      void capabilityPreview.offsetWidth; // force DOM reflow
+      capabilityPreview.classList.add('is-popping');
+    };
+
     const activateCapability = (item) => {
-      if (item.classList.contains('is-active')) return;
       capabilityItems.forEach((candidate) => {
         const active = candidate === item;
         candidate.classList.toggle('is-active', active);
         candidate.setAttribute('aria-pressed', String(active));
       });
+
       const image = item.dataset.image;
-      capabilityStage.classList.add('is-changing');
       if (capabilityLabel) capabilityLabel.textContent = item.dataset.label || item.textContent.trim();
-      if (capabilityImage) {
-        capabilityImage.onload = () => capabilityStage.classList.remove('is-changing');
-        capabilityImage.src = image;
-      }
+      if (capabilityImage) capabilityImage.src = image;
       if (capabilityBackImage) capabilityBackImage.src = image;
-      window.setTimeout(() => capabilityStage.classList.remove('is-changing'), 500);
+
+      // Pop the clip from a random position across the slide
+      placePreviewRandomly();
     };
+
     capabilityItems.forEach((item) => {
       item.addEventListener('click', () => activateCapability(item));
-      item.addEventListener('pointerenter', () => {
-        if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) activateCapability(item);
-      });
-      item.addEventListener('focus', () => activateCapability(item));
     });
+
+    // Place initial preview position
+    placePreviewRandomly();
   }
 
   const closeMenu = () => {
